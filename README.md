@@ -11,12 +11,19 @@ A transcendental  function  is  a  function  that  does  not  satisfy  any  sing
 
 Let  N  be  the  size  of  a  project  team.  The  purpose  of  ETERNITY  is  to  have  a  scientific  calculator that can compute certain special functions:
 The permitted set of choices is:
+
 1.arccos(x)
+
 2.abx3.logb(x)
+
 4.Γ(x) (Gamma Function)
+
 5.MAD (Mean Absolute Deviation)
+
 6.σ (Standard Deviation)
+
 7.sinh(x)
+
 8.xy
 
 In  the  foregoing,  x  and  y  are  real  variables,  and  a  and  b  are  real  constants,  unless  otherwise stated.
