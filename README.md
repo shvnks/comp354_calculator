@@ -12,14 +12,14 @@ A transcendental  function  is  a  function  that  does  not  satisfy  any  sing
 Let  N  be  the  size  of  a  project  team.  The  purpose  of  ETERNITY  is  to  have  a  scientific  calculator that can compute certain special functions:
 The permitted set of choices is:
 
-1.arccos(x) worked on by Will
-2.ab^x worked on by Andrei
-3.logb(x) worked on by Shanks
-4.Γ(x) (Gamma Function) TEAM OF 7 therefore no one is working on this function
-5.MAD (Mean Absolute Deviation) worked on by Vatsa
-6.σ (Standard Deviation) worked on by Nicholas
-7.sinh(x) worked on by Arash
-8.x^y worked on by Danny
+1. arccos(x) worked on by Will
+2. ab^x worked on by Andrei
+3. logb(x) worked on by Shanks
+4. Γ(x) (Gamma Function) TEAM OF 7 therefore no one is working on this function
+5. MAD (Mean Absolute Deviation) worked on by Vatsa
+6. σ (Standard Deviation) worked on by Nicholas
+7. sinh(x) worked on by Arash
+8. x^y worked on by Danny
 
 In  the  foregoing,  x  and  y  are  real  variables,  and  a  and  b  are  real  constants,  unless  otherwise stated.
 
