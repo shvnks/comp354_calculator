@@ -1,24 +1,54 @@
-\documentclass{article}
+\documentclass[titlepage]{article}
 \usepackage[utf8]{inputenc}
 
+% used for enhanced justification
+\usepackage{microtype}
+
+% used for indexing
+\usepackage{index}
+\makeindex
+
+% used for filling in blanks
+\usepackage{blindtext}
+
+% used for nicer headers
+\usepackage{fancyhdr}
+
+% math packages
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\begin{document}
 \title{Eternity}
 \author{Tyler Shanks, Danny Roux, Andrei Serban, Vatsa Katrik Shah,\newpage William Robinson, Nicholas Simo, Arash Singh}
 \date{June 2021}
-
-\begin{document}
-
 \maketitle
 
-\section{Table of Contents}
+\fancyfoot{\thepage}
+
+\tableofcontents
+\newpage
 
 \section{Introduction}
+\blindtext
 
 \section{Glossary}
+\blindtext
 
 \section{Functions}
+\blindtext
 
 \section{Materials and Methods (Tools)}
+\blindtext
 
+# need to fix the references section
 \section{References}
+\bibliographystyle{ieee}
+\bibliography{references.bib}
 
 \end{document}
