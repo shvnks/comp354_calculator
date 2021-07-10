@@ -51,9 +51,9 @@ class PushButton(QPushButton):
     return s
 
 class MainWindow(QWidget):
-  def __init__(self):
-    super(MainWindow, self).__init__()
-    
+  def __init__(self, parent=None):
+    super(MainWindow, self).__init__(parent)
+
     self.cursorPosition = 0
     self.equationString = ''
     
@@ -298,7 +298,7 @@ def main(argv):
   app.setFont(font)
   
   # create the main window
-  window = MainWindow(app)
+  window = MainWindow()
   window.setWindowTitle('ETERNITY Calculator')
   window.show()
 
