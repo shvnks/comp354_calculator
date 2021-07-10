@@ -5,6 +5,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
+from FunctionExponent import FunctionExponent
+
 COLOR_DARK     = '#191919'
 COLOR_MEDIUM   = '#353535'
 COLOR_MEDLIGHT = '#5A5A5A'
@@ -282,7 +284,10 @@ class MainWindow(QWidget):
     
 def main(argv):
 
-  #TODO: if command line equation argument, dont show the UI, and process the equation
+  # uncomment to test functions
+  #f = FunctionExponent(1.415, -2.983)
+  #print(f.calculateEquation())
+  #return
 
   app = QApplication(argv)
 
