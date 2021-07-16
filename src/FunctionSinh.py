@@ -1,12 +1,9 @@
 from FunctionBase import FunctionBase
-
+from FunctionFactorial import FunctionFactorial
+from FunctionExponent import FunctionExponent
 
 class FunctionSinh(FunctionBase):
     
-    #constants
-    MAX_RESULT = 10000000
-    MIN_RESULT = -10000000
-
     #constructor
     def __init__(self, num: float) -> None:
         super(FunctionSinh, self).__init__()
@@ -30,22 +27,9 @@ class FunctionSinh(FunctionBase):
         if(result > self.MAX_RESULT):
             raise Exception("result too large")
         elif(result < self.MIN_RESULT):
-          raise Exception("result too small")      
+            raise Exception("result too small")      
           
         return round(result,5)
-
-    # calculate factorial (private helper function)
-    # input: n (int)
-    # output: n!
-    def __custom_factorial(self,n:int):
-        result=1
-        if n==0:
-            return 1
-        
-        elif n>0:
-            for i in range(1,n+1):
-                result = result*i
-        return result
 
 
     # calculate e^x (private helper function) using Mclaurin Series
@@ -54,7 +38,5 @@ class FunctionSinh(FunctionBase):
     def __custom_exp(self,x):
         n=0
         for i in range(0, self.MAX_TERMS):
-            n= n + (x**i)/(self.__custom_factorial(i))
+            n= n + (FunctionExponent(x,i).calculateEquation())/(FunctionFactorial(i).calculateEquation())
         return n
-
-
