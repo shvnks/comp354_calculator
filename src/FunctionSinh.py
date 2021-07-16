@@ -1,6 +1,7 @@
 from FunctionBase import FunctionBase
 from FunctionFactorial import FunctionFactorial
 from FunctionExponent import FunctionExponent
+from CalculationErrorException import CalculationErrorException
 
 class FunctionSinh(FunctionBase):
     
@@ -26,9 +27,9 @@ class FunctionSinh(FunctionBase):
         
         #handle exceptions. We don't want a number too large or small
         if(result > self.MAX_RESULT):
-            raise Exception("result too large")
+            raise CalculationErrorException("result too large")
         elif(result < self.MIN_RESULT):
-            raise Exception("result too small")      
+            raise CalculationErrorException("result too small")      
           
         return round(result,5)
 
