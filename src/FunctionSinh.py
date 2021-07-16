@@ -18,7 +18,8 @@ class FunctionSinh(FunctionBase):
         if(isDeg):
             self.num = self.num * self.PI/180
             
-        #calculate sinh
+        #calculate sinh using (e^x-e^-x)/2
+        # https://www.whitman.edu/mathematics/calculus_online/section04.11.html
         num1 = self.__custom_exp(self.num)
         num2 = self.__custom_exp(-self.num)
         result = (num1-num2)/2
@@ -37,6 +38,8 @@ class FunctionSinh(FunctionBase):
     # output: e^x
     def __custom_exp(self,x):
         n=0
+        # approximating e^x using Mclaurin Series
+        # https://blogs.ubc.ca/infiniteseriesmodule/units/unit-3-power-series/taylor-series/maclaurin-expansion-of-ex/
         for i in range(0, self.MAX_TERMS):
             n= n + (FunctionExponent(x,i).calculateEquation())/(FunctionFactorial(i).calculateEquation())
         return n
