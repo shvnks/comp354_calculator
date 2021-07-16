@@ -1,4 +1,5 @@
 
+from CalculationErrorException import CalculationErrorException
 from FunctionBase import FunctionBase
 from FunctionFactorial import FunctionFactorial
 
@@ -42,9 +43,15 @@ class FunctionExponent(FunctionBase):
     # calculateEquation: Method that is called to calculate any exponents
     def calculateEquation(self) -> float:
 
+        if self.x == 0 and self.y < 0:
+            raise CalculationErrorException('Invalid Input: Base of 0 cannot be raise to a negative value')
+
+        if self.x < 0 and self.y < 0 and not isinstance(self.y, int):
+            raise CalculationErrorException('Invalid Input: Negative Base exponent cannot be raised to negative decimals')
+
         # Don't need to do the Taylor Expansion of it meets any of those requirements
         if self.y == 0 or self.x == 0 or isinstance(self.y, int):
-            return self.evaluateIntExponent(x = self.x, y = self.y)
+            return self.__calculateIntExponent(x = self.x, y = self.y)
         else:
 
             #TODO: Replace ln from python with the manual implementation
@@ -55,6 +62,8 @@ class FunctionExponent(FunctionBase):
 
             # https://math.stackexchange.com/a/21386/766151
             # https://math.stackexchange.com/questions/1124242/how-to-calculate-exp-x-using-taylor-series
+
+            selfxabs = self.x
 
             x = self.y * math.log(self.x)
             xabs = x
@@ -73,5 +82,31 @@ class FunctionExponent(FunctionBase):
             return sum
 
 
+def testFunction(x, y):
+    try:
+        if round(FunctionExponent(x = x, y = y).calculateEquation(), 13) != round(x ** y, 13):
+            raise Exception('Unexpected result %f. Was expecting %f.' % (round(FunctionExponent(x = x, y = y).calculateEquation(), 13), round(x ** y, 13)))
+    except CalculationErrorException:
+        pass
 
+if __name__ == '__main__':
+    testFunction(0, 0)
+    testFunction(0, 1)
+    testFunction(1, 0)
+    testFunction(1, 1)
+    testFunction(2, 1)
+    testFunction(2, 2)
+    testFunction(2, 6)
+    testFunction(3, 6)
+    testFunction(2.154, 3.685)
+    testFunction(3, 2.564)
+    testFunction(1, -1)
+    testFunction(2, -2)
+    testFunction(5, -5)
+    testFunction(-5, -2)
+    testFunction(-5, -5.4673)
+    testFunction(-5, 3)
+    testFunction(3, -1.456)
+    testFunction(1.355, -1.345)
+    testFunction(-1.355, -1.345)
         
