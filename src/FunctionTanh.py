@@ -10,16 +10,16 @@ class FunctionTanh(FunctionBase):
         super(FunctionTanh, self).__init__()
         self.num = num
 
-    # calculate sinh
+    # calculate tanh(num)
     # input: num (int), isDeg (boolean)
-    # output: sinh(num)
+    # output: tanh(num)
     def calculateEquation(self, isDeg=False) -> float:
 
         #if the number is in degrees, convert it to radians
         if(isDeg):
             self.num = self.num * self.PI/180
             
-        #calculate tanh using sinh(x)/cosh(x)
+        #calculate tanh(num) using sinh(num)/cosh(num)
         # https://www.whitman.edu/mathematics/calculus_online/section04.11.html
         num1 = FunctionSinh(self.num).calculateEquation()
         num2 = FunctionCosh(-self.num).calculateEquation()

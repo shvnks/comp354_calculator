@@ -9,9 +9,9 @@ class FunctionCosh(FunctionBase):
         super(FunctionCosh, self).__init__()
         self.num = num
 
-    # calculate sinh
+    # calculate cosh(num)
     # input: num (int), isDeg (boolean)
-    # output: sinh(num)
+    # output: cosh(num)
     def calculateEquation(self, isDeg=False) -> float:
 
         #if the number is in degrees, convert it to radians
