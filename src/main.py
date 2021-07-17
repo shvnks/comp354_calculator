@@ -2,7 +2,7 @@ from typing import Callable
 
 import sys
 import os
-import re
+import re 
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -20,8 +20,89 @@ COLOR_WRONG    = '#ff0000'
 def helpStr():
     return 'Help String'
 
+class CustomListViewItem(QWidget):
+
+    deleteme = pyqtSignal(QListWidgetItem)
+
+    def __init__(self, equation: str, result: str, parent: QListWidget, listItem: QListWidgetItem) -> None:
+        super(CustomListViewItem, self).__init__(parent=parent)
+
+        self.listItem = listItem
+
+        self.equationText = QLabel(self)
+        self.equationText.setText(equation)
+        self.equationText.setSizePolicy(parent.sizePolicy())
+        self.equationText.setAlignment(Qt.AlignRight)
+        self.equationText.setStyleSheet('border: 1px solid ' + COLOR_MEDLIGHT)
+        self.equationText.setTextFormat(Qt.RichText)
+
+        self.deleteButton = QPushButton('X', self)
+        self.deleteButton.pressed.connect(self.__deleteButtonPressed)
+
+        self.answerLabel = QLabel(result, self)
+
+        self.hBox = QHBoxLayout()
+        self.hBox.addWidget(self.deleteButton)
+        self.hBox.addStretch()
+        self.hBox.addWidget(self.answerLabel)
+
+        self.vBox = QVBoxLayout()
+        self.vBox.addWidget(self.equationText)
+        self.vBox.addItem(self.hBox)
+
+        self.setLayout(self.vBox)
+
+    def __deleteButtonPressed(self):
+        self.deleteme.emit(self.listItem)
+
+class HistoryWindow(QWidget):
+    def __init__(self, parent: QWidget) -> None:
+        super(HistoryWindow, self).__init__()
+        
+        self.setWindowTitle('ETERNITY History')
+        self.setMinimumSize(450, 300)
+        self.setSizePolicy(parent.sizePolicy())
+
+        self.listView = QListWidget(self)
+        self.listView.setSizePolicy(self.sizePolicy())
+
+        self.clearAllButton = QPushButton('Clear All', self)
+        self.clearAllButton.pressed.connect(self.__clearAllPressed)
+
+        self.hBox = QHBoxLayout()
+        self.hBox.addStretch()
+        self.hBox.addWidget(self.clearAllButton)
+
+        self.vBox = QVBoxLayout()
+        self.vBox.addWidget(QLabel('History:'))
+        self.vBox.addWidget(self.listView)
+        self.vBox.addItem(self.hBox)
+
+        self.setLayout(self.vBox)
+
+    def __clearAllPressed(self):
+        self.listView.clear()
+
+    @pyqtSlot(QListWidgetItem)
+    def removeItem(self, item: QListWidgetItem):
+        print('remove')
+        self.listView.takeItem(self.listView.row(item))
+
+    def addEquation(self, equation: str, answer: str):
+
+        listViewItem = QListWidgetItem(self.listView)
+        listViewItem.setFlags(Qt.ItemFlag.NoItemFlags)
+
+        itemWidget = CustomListViewItem(equation, answer, self.listView, listViewItem)
+        itemWidget.deleteme.connect(self.removeItem)
+
+        listViewItem.setSizeHint(itemWidget.sizeHint())
+
+        self.listView.insertItem(0, listViewItem)
+        self.listView.setItemWidget(listViewItem, itemWidget)
+
 class ArrayInputDialog(QDialog):
-    def __init__(self, parent : QWidget, title : str, text : str):
+    def __init__(self, title : str, text : str, parent : QWidget = None) -> None:
         super(ArrayInputDialog, self).__init__(parent)
 
         self.setAttribute(Qt.WidgetAttribute.WA_QuitOnClose)
@@ -50,7 +131,7 @@ class ArrayInputDialog(QDialog):
 
         self.validateText('')
 
-    def validateText(self, newStr:str):
+    def validateText(self, newStr : str) -> None:
         if self.regExVal.validate(newStr, 0)[0] == QValidator.State.Acceptable:
             self.lineEdit.setStyleSheet('border: 1px solid ' + COLOR_MEDLIGHT)
             self.okButton.setDisabled(False)
@@ -104,6 +185,7 @@ class MainWindow(QWidget):
         self.equationString = ''
         
         self.app = app
+        self.history = HistoryWindow(self)
 
         # Get the light and dark mode stylesheet
         self.lightStylesheet = self.app.styleSheet()
@@ -112,9 +194,6 @@ class MainWindow(QWidget):
         stream = QTextStream(darkStylesheetFile)
         self.darkStylesheet = stream.readAll()
         
-        #import pdb
-        #pdb.set_trace()
-
         # Set the style to the previous setting
         if str(QSettings().value('AppStyle')) == 'light':
             self.app.setStyleSheet(self.lightStylesheet)
@@ -122,7 +201,7 @@ class MainWindow(QWidget):
             self.app.setStyleSheet(self.darkStylesheet)
 
         # Set the minimum window size possible
-        self.setMinimumSize(QSize(450, 500))
+        self.setMinimumSize(450, 500)
         
         # Create the Layout
         self.mainLayout = QGridLayout(self)
@@ -132,22 +211,22 @@ class MainWindow(QWidget):
         # Create the MenuBar
         self.menuBar = QMenuBar(self)
 
-        self.helpMenu = QMenu('Help', self.menuBar)
-        aboutAction = self.helpMenu.addAction('About')
+        self.helpMenu = QMenu('H&elp', self.menuBar)
+        aboutAction = self.helpMenu.addAction('&About')
         aboutAction.triggered.connect(self.on_aboutAction_triggered)
-        helpAction = self.helpMenu.addAction('Help')
+        helpAction = self.helpMenu.addAction('&Help')
         helpAction.triggered.connect(self.on_helpAction_triggered)
         
-        self.styleMenu = QMenu('Style', self.menuBar)
-        lightStyleAction = self.styleMenu.addAction('Light')
+        self.styleMenu = QMenu('&Style', self.menuBar)
+        lightStyleAction = self.styleMenu.addAction('&Light')
         lightStyleAction.triggered.connect(self.on_lightStyleAction_triggered)
-        darkStyleAction = self.styleMenu.addAction('Dark')
+        darkStyleAction = self.styleMenu.addAction('&Dark')
         darkStyleAction.triggered.connect(self.on_darkStyleAction_triggered)
 
         self.menuBar.addMenu(self.styleMenu)
         self.menuBar.addMenu(self.helpMenu)
 
-        historyAction = self.menuBar.addAction('History')
+        historyAction = self.menuBar.addAction('&History')
         historyAction.triggered.connect(self.on_historyAction_triggered)
 
         self.mainLayout.setMenuBar(self.menuBar)
@@ -225,6 +304,13 @@ class MainWindow(QWidget):
         self.addButton('-', 'minusButton', '-', 9, 4, shortcut=QKeySequence('-'))
         self.equalButton = self.addButton('=', 'equalButton', '=', 10, 3, 1, 2, slot=self.compute, shortcut=QKeySequence('='))
         
+    def closeEvent(self, ev: QCloseEvent) -> None:
+        self.history.close()
+
+        
+
+        super().closeEvent(ev)
+
     # add a button to the layout
     def addButton(self, text: str, name: str, equation: str, row: int, col: int, rowSpan: int = 1, colSpan: int = 1, slot: Callable = None, shortcut: QKeySequence = None):
         
@@ -276,7 +362,7 @@ class MainWindow(QWidget):
         settings.setValue('AppStyle', 'dark')
     
     def on_historyAction_triggered(self):
-        QMessageBox.information(self, 'test', 'teststr', QMessageBox.StandardButton.Ok)
+        self.history.show()
 
     # handle mouse presses
     def mousePressEvent(self, event: QMouseEvent) -> None:
@@ -288,7 +374,7 @@ class MainWindow(QWidget):
     def validateEquation(self):
     
         #TODO: get whether the equation is valid or not from the equation evaluator
-        if True:
+        if False:
             self.equationText.setStyleSheet('border: 1px solid ' + COLOR_WRONG)
             self.equalButton.setEnabled(False)
         else:
@@ -314,7 +400,7 @@ class MainWindow(QWidget):
     def addArrayFunctionToEquation(self, functionStr: str):
         
         #arrayInput = QInputDialog.getText(self, 'Input values', 'Enter a list of numbers, separated by commas:', inputMethodHints=Qt.ImhFormattedNumbersOnly)[0]
-        arrayInput = ArrayInputDialog(self, 'Input values', 'Enter a list of numbers, separated by commas:')
+        arrayInput = ArrayInputDialog('Input values', 'Enter a list of numbers, separated by commas:', self)
         if arrayInput.exec():
             arrayInputValues = arrayInput.getValue().strip()
             self.addTextToEquation(functionStr + '(' + arrayInputValues + ')')
@@ -370,12 +456,11 @@ class MainWindow(QWidget):
         
     # computer the equation
     def compute(self):
-        tmp = QMessageBox(self)
-        tmp.setWindowTitle('Equation')
-        tmp.setText(self.equationText.text())
-        tmp.setStandardButtons(QMessageBox.Ok)
+        #TODO: call the interpreter to calculate the value
+        answer = 123456.5
+        self.history.addEquation(self.equationString, str(answer))
         self.clearText()
-        tmp.exec_()
+        self.addTextToEquation(str(answer))
         
 def main(argv):
 
