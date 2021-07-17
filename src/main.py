@@ -1,5 +1,8 @@
+from typing import Callable
+
 import sys
 import os
+import re
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -16,6 +19,47 @@ COLOR_WRONG    = '#ff0000'
 
 def helpStr():
     return 'Help String'
+
+class ArrayInputDialog(QDialog):
+    def __init__(self, parent : QWidget, title : str, text : str):
+        super(ArrayInputDialog, self).__init__(parent)
+
+        self.setAttribute(Qt.WidgetAttribute.WA_QuitOnClose)
+        self.setWindowTitle(title)
+
+        # match any string composed of comma separated integer of float numbers 
+        #self.regEx = r'^(\s*(\d+.\d+|\d+)\,\s*)*(\d+.\d+|\d+)$'
+        self.regExVal = QRegExpValidator(QRegExp(r'^(\s*(\d+.\d+|\d+)\,\s*)*(\d+.\d+|\d+)$'))
+
+        self.lineEdit = QLineEdit(self)
+        self.lineEdit.textChanged.connect(self.validateText)
+        self.lineEdit.setValidator(self.regExVal)
+
+        self.buttonBox = QDialogButtonBox(self)
+        self.okButton = self.buttonBox.addButton('Ok', QDialogButtonBox.ButtonRole.AcceptRole)
+        self.cancelButton = self.buttonBox.addButton('Cancel', QDialogButtonBox.ButtonRole.RejectRole)
+
+        self.vBox = QVBoxLayout()
+        self.vBox.addWidget(QLabel(self.tr(text)))
+        self.vBox.addWidget(self.lineEdit)
+        self.vBox.addWidget(self.buttonBox)
+        self.setLayout(self.vBox)
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.validateText('')
+
+    def validateText(self, newStr:str):
+        if self.regExVal.validate(newStr, 0)[0] == QValidator.State.Acceptable:
+            self.lineEdit.setStyleSheet('border: 1px solid ' + COLOR_MEDLIGHT)
+            self.okButton.setDisabled(False)
+        else:
+            self.lineEdit.setStyleSheet('border: 1px solid ' + COLOR_WRONG)
+            self.okButton.setDisabled(True)
+        
+    def getValue(self) -> str:
+        return self.lineEdit.text()
 
 class PushButton(QPushButton):
     def __init__(self, parent=None, text=None):
@@ -102,6 +146,10 @@ class MainWindow(QWidget):
 
         self.menuBar.addMenu(self.styleMenu)
         self.menuBar.addMenu(self.helpMenu)
+
+        historyAction = self.menuBar.addAction('History')
+        historyAction.triggered.connect(self.on_historyAction_triggered)
+
         self.mainLayout.setMenuBar(self.menuBar)
         
         # Create the UI elements
@@ -125,8 +173,8 @@ class MainWindow(QWidget):
         self.addButton('AC', 'clearButton', 'AC', 1, 4, slot=self.clearText)
         
         # Row 2
-        self.addButton(u'\u03c0', 'piButton', '3.14159', 2, 0)
-        self.addButton('e', 'eButton', '2.71828', 2, 1, shortcut=QKeySequence('e'))
+        self.addButton(u'\u03c0', 'piButton', '\u03c0', 2, 0)
+        self.addButton('e', 'eButton', 'e', 2, 1, shortcut=QKeySequence('e'))
         self.addButton('x<sup>2</sup>', 'squareButton', '^2', 2, 2)
         self.addButton('x<sup>3</sup>', 'cubeButton', '^3', 2, 3)
         self.addButton('x<sup>y</sup>', 'expoButton', '^', 2, 4, shortcut=QKeySequence('^'))
@@ -149,8 +197,8 @@ class MainWindow(QWidget):
         self.addButton('sinh(x)', 'sinhButton', 'sinh()', 5, 0)
         self.addButton('cosh(x)', 'coshButton', 'cosh()', 5, 1)
         self.addButton('tanh(x)', 'tanhButton', 'tanh()', 5, 2)
-        self.addButton('MAD(x)',  'madButton', 'MAD()', 5, 3)
-        self.addButton(u'\u03c3(x)', 'stddevButton', u'\u03c3()', 5, 4)
+        self.addButton('MAD(x)',  'madButton', 'MAD()', 5, 3, slot = lambda: self.addArrayFunctionToEquation('MAD'))
+        self.addButton(u'\u03c3(x)', 'stddevButton', u'\u03c3()', 5, 4, slot = lambda: self.addArrayFunctionToEquation('\u03c3'))
         
         #Row 6
         self.vSpacer = QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding)
@@ -178,7 +226,7 @@ class MainWindow(QWidget):
         self.equalButton = self.addButton('=', 'equalButton', '=', 10, 3, 1, 2, slot=self.compute, shortcut=QKeySequence('='))
         
     # add a button to the layout
-    def addButton(self, text, name, equation, row, col, rowSpan = 1, colSpan = 1, slot = None, shortcut = None):
+    def addButton(self, text: str, name: str, equation: str, row: int, col: int, rowSpan: int = 1, colSpan: int = 1, slot: Callable = None, shortcut: QKeySequence = None):
         
         # create the button object
         newButton = PushButton(self, text)
@@ -227,6 +275,9 @@ class MainWindow(QWidget):
         settings = QSettings()
         settings.setValue('AppStyle', 'dark')
     
+    def on_historyAction_triggered(self):
+        QMessageBox.information(self, 'test', 'teststr', QMessageBox.StandardButton.Ok)
+
     # handle mouse presses
     def mousePressEvent(self, event: QMouseEvent) -> None:
             # ignore mouse presses on the main window itself so that focus is not lost
@@ -245,21 +296,29 @@ class MainWindow(QWidget):
             self.equalButton.setEnabled(True)
         
     # add element to the equation
-    def addTextToEquation(self, str):
+    def addTextToEquation(self, functionStr: str):
 
         # add the string to the current location of the cursor
-        self.equationString = self.equationString[:self.cursorPosition] + str + self.equationString[self.cursorPosition:]
+        self.equationString = self.equationString[:self.cursorPosition] + functionStr + self.equationString[self.cursorPosition:]
         
         # calculate the new cursor position
-        self.cursorPosition += len(str)
+        self.cursorPosition += len(functionStr)
         
         # if the parameter is a function, sets the cursor to inside the parenthesis
-        if len(str) > 1 and str[-1] == ')':
+        if len(functionStr) > 1 and functionStr[-1] == ')':
             self.cursorPosition -= 1
         
         #update the equation shown
         self.writeEquation()
+
+    def addArrayFunctionToEquation(self, functionStr: str):
         
+        #arrayInput = QInputDialog.getText(self, 'Input values', 'Enter a list of numbers, separated by commas:', inputMethodHints=Qt.ImhFormattedNumbersOnly)[0]
+        arrayInput = ArrayInputDialog(self, 'Input values', 'Enter a list of numbers, separated by commas:')
+        if arrayInput.exec():
+            arrayInputValues = arrayInput.getValue().strip()
+            self.addTextToEquation(functionStr + '(' + arrayInputValues + ')')
+
     # move the cursor 1 step to the left
     def cursorLeft(self):
         self.cursorPosition -= 1
