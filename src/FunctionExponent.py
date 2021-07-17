@@ -20,11 +20,11 @@ class FunctionExponent(FunctionBase):
         # x^0 = 1
         if y == 0:
             return 1
-        
+
         # 0^x = 0
         elif x == 0:
             return 0
-        
+
         # x^y where y is an integer
         elif isinstance(y, int):
             result = x
@@ -34,7 +34,7 @@ class FunctionExponent(FunctionBase):
 
             for i in range(1, yabs):
                 result = result * x
-            
+
             # if y was negative, then invert it, since x^(-y) = 1/(x^y)
             if y < 0:
                 result = 1 / result
@@ -55,9 +55,9 @@ class FunctionExponent(FunctionBase):
         else:
 
             #TODO: Replace ln from python with the manual implementation
-            
+
             #Any exponent can be calculated this way: a^b = e^(b*ln(a))
-            # and then the e^x can be approximated using the Taylor Series Expension: 
+            # and then the e^x can be approximated using the Taylor Series Expension:
             # e^x = Sum_{i=1}^{\inft}( x^{i-1} ) \ ( (i-1)! )
 
             # https://math.stackexchange.com/a/21386/766151
@@ -109,4 +109,3 @@ if __name__ == '__main__':
     testFunction(3, -1.456)
     testFunction(1.355, -1.345)
     testFunction(-1.355, -1.345)
-        
