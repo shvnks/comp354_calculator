@@ -1,25 +1,28 @@
 """Calculating Standard Deviation."""
+from FunctionExponent import FunctionExponent
 
 
-def power(x, y):
-    """Power function."""
-    return x**y
+class FunctionStandardDeviation():
+    """Calculate StandardDeviation."""
 
+    def __init__(self, values):
+        """Initialize class with an array of values."""
+        self.values = values
 
-def standard_deviation(values):
-    """Calculate standard deviation."""
-    mean = 0
-    for point in values:
-        mean += point
+    def getMean(self):
+        """Acquire Average."""
+        self.mean = 0
+        for point in self.values:
+            self.mean += point
+        self.mean /= len(self.values)
 
-    mean /= len(values)
-    standard_deviation = 0
+    def standard_deviation(self):
+        """Calculate standard deviation."""
+        self.getMean()  # Gets average of data points in self.values
+        standard_deviation = 0
 
-    for point in values:
-        standard_deviation += power((point - mean), 2)
+        for point in self.values:  # Calculation of Σ(point - mean)^2
+            standard_deviation += FunctionExponent((point - self.mean), 2).calculateEquation()
 
-    return power((standard_deviation / len(values)), 0.5)
-
-
-values = [1, 4, 0.5, 7, 3.4, 6.5, 3.4]
-print(standard_deviation(values))  # gives 2.2843746074010665
+        # Returns sqrt(Σ(point - mean)^2 / Number of points)
+        return FunctionExponent((standard_deviation / len(self.values)), 0.5).calculateEquation()
