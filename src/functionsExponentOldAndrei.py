@@ -1,5 +1,4 @@
 # make your functions here
-import math
 
 
 def exponent_function(constant, base, power):
