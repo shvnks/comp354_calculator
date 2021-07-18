@@ -56,6 +56,9 @@ class CustomListViewItem(QWidget):
         self.deleteme.emit(self.listItem)
 
 class HistoryWindow(QWidget):
+
+    setEquationText = pyqtSignal(str)
+
     def __init__(self, parent: QWidget) -> None:
         super(HistoryWindow, self).__init__()
         
@@ -63,8 +66,23 @@ class HistoryWindow(QWidget):
         self.setMinimumSize(450, 300)
         self.setSizePolicy(parent.sizePolicy())
 
+        self.equationList = []
+
+        # Restore the geometry of the History window from the settings
+        settings = QSettings()
+        self.restoreGeometry(settings.value('HistoryWindow/geometry', QByteArray()))
+
         self.listView = QListWidget(self)
-        self.listView.setSizePolicy(self.sizePolicy())
+        self.listView.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.listView.itemClicked.connect(self.itemClicked)
+
+        # Get back the list of previous equations saved
+        size = settings.beginReadArray('HistoryEquations')
+        for i in range(size):
+            settings.setArrayIndex(i)
+            equation = settings.value('equation')
+            answer = settings.value('answer')
+            self.equationList.insert(0, (equation, answer))
 
         self.clearAllButton = QPushButton('Clear All', self)
         self.clearAllButton.pressed.connect(self.__clearAllPressed)
@@ -73,24 +91,51 @@ class HistoryWindow(QWidget):
         self.hBox.addStretch()
         self.hBox.addWidget(self.clearAllButton)
 
+        label = QLabel('History:')
+        label.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
+
         self.vBox = QVBoxLayout()
-        self.vBox.addWidget(QLabel('History:'))
+        self.vBox.setSizeConstraint(QLayout.SizeConstraint.SetMinimumSize)
+        self.vBox.addWidget(label)
         self.vBox.addWidget(self.listView)
         self.vBox.addItem(self.hBox)
 
         self.setLayout(self.vBox)
 
-    def __clearAllPressed(self):
+        # Add the equations back to the list view
+        for item in reversed(self.equationList):
+            self.createNewListItem(item[0], item[1])
+
+    def closeEvent(self, ev: QCloseEvent) -> None:
+
+        settings = QSettings()
+        settings.setValue('HistoryWindow/geometry', self.saveGeometry())
+
+        settings.beginWriteArray('HistoryEquations')
+        for i in range(len(self.equationList)):
+            settings.setArrayIndex(i)
+            settings.setValue('equation', self.equationList[i][0])
+            settings.setValue('answer', self.equationList[i][1])
+        settings.endArray()
+
+        super().closeEvent(ev)
+
+    def __clearAllPressed(self) -> None:
         self.listView.clear()
+        self.equationList.clear()
 
     @pyqtSlot(QListWidgetItem)
-    def removeItem(self, item: QListWidgetItem):
-        print('remove')
-        self.listView.takeItem(self.listView.row(item))
+    def removeItem(self, item: QListWidgetItem) -> None:
+        row = self.listView.row(item)
+        self.listView.takeItem(row)
+        self.equationList.pop(row)
 
-    def addEquation(self, equation: str, answer: str):
+    def addEquation(self, equation: str, answer: str) -> None:
+        self.createNewListItem(equation, answer)
+        self.equationList.insert(0, (equation, answer))
 
-        listViewItem = QListWidgetItem(self.listView)
+    def createNewListItem(self, equation: str, answer: str) -> None:
+        listViewItem = QListWidgetItem()
         listViewItem.setFlags(Qt.ItemFlag.NoItemFlags)
 
         itemWidget = CustomListViewItem(equation, answer, self.listView, listViewItem)
@@ -100,6 +145,12 @@ class HistoryWindow(QWidget):
 
         self.listView.insertItem(0, listViewItem)
         self.listView.setItemWidget(listViewItem, itemWidget)
+
+    def itemClicked(self, item: QListWidgetItem) -> None:
+        row = self.listView.row(item)
+        equation = self.equationList[row][0]
+        self.setEquationText.emit(equation)
+
 
 class ArrayInputDialog(QDialog):
     def __init__(self, title : str, text : str, parent : QWidget = None) -> None:
@@ -143,7 +194,7 @@ class ArrayInputDialog(QDialog):
         return self.lineEdit.text()
 
 class PushButton(QPushButton):
-    def __init__(self, parent=None, text=None):
+    def __init__(self, parent=None, text=None) -> None:
         if parent is not None:
             super().__init__(parent)
         else:
@@ -165,20 +216,20 @@ class PushButton(QPushButton):
         self.__lyt.addWidget(self.__lbl)
         return
 
-    def setText(self, text):
+    def setText(self, text) -> None:
         self.__lbl.setText(text)
         self.updateGeometry()
         return
 
-    def sizeHint(self):
+    def sizeHint(self) -> QSize:
         s = QPushButton.sizeHint(self)
         w = self.__lbl.sizeHint()
         s.setWidth(w.width())
         s.setHeight(w.height())
         return s
 
-class MainWindow(QWidget):
-    def __init__(self, app, parent=None):
+class MainWindow(QMainWindow):
+    def __init__(self, app, parent=None) -> None:
         super(MainWindow, self).__init__(parent)
 
         self.cursorPosition = 0
@@ -186,6 +237,11 @@ class MainWindow(QWidget):
         
         self.app = app
         self.history = HistoryWindow(self)
+        self.history.setEquationText.connect(self.setEquationText)
+
+        settings = QSettings()
+        self.restoreGeometry(settings.value('geometry', QByteArray()))
+        self.restoreState(settings.value('state', QByteArray()))
 
         # Get the light and dark mode stylesheet
         self.lightStylesheet = self.app.styleSheet()
@@ -195,7 +251,7 @@ class MainWindow(QWidget):
         self.darkStylesheet = stream.readAll()
         
         # Set the style to the previous setting
-        if str(QSettings().value('AppStyle')) == 'light':
+        if str(settings.value('AppStyle')) == 'light':
             self.app.setStyleSheet(self.lightStylesheet)
         else:
             self.app.setStyleSheet(self.darkStylesheet)
@@ -204,9 +260,11 @@ class MainWindow(QWidget):
         self.setMinimumSize(450, 500)
         
         # Create the Layout
-        self.mainLayout = QGridLayout(self)
+        self.mainLayout = QGridLayout()
         self.mainLayout.setObjectName('mainLayout')
-        self.setLayout(self.mainLayout)
+        self.mainLayoutWidget = QWidget(self)
+        self.mainLayoutWidget.setLayout(self.mainLayout)
+        self.setCentralWidget(self.mainLayoutWidget)
         
         # Create the MenuBar
         self.menuBar = QMenuBar(self)
@@ -238,7 +296,7 @@ class MainWindow(QWidget):
         self.equationText = QLabel(self)
         self.equationText.setText('_')
         self.equationText.setSizePolicy(self.sizePolicy)
-        self.equationText.setAlignment(Qt.AlignRight)
+        self.equationText.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         self.equationText.setStyleSheet('border: 1px solid ' + COLOR_MEDLIGHT)
         self.equationText.setTextFormat(Qt.RichText)
         self.mainLayout.addWidget(self.equationText, 0, 0, 1, 5)
@@ -307,12 +365,14 @@ class MainWindow(QWidget):
     def closeEvent(self, ev: QCloseEvent) -> None:
         self.history.close()
 
+        settings = QSettings()
+        settings.setValue('geometry', self.saveGeometry())
+        settings.setValue('state', self.saveState())
         
-
         super().closeEvent(ev)
 
     # add a button to the layout
-    def addButton(self, text: str, name: str, equation: str, row: int, col: int, rowSpan: int = 1, colSpan: int = 1, slot: Callable = None, shortcut: QKeySequence = None):
+    def addButton(self, text: str, name: str, equation: str, row: int, col: int, rowSpan: int = 1, colSpan: int = 1, slot: Callable = None, shortcut: QKeySequence = None) -> None:
         
         # create the button object
         newButton = PushButton(self, text)
@@ -336,7 +396,7 @@ class MainWindow(QWidget):
         return newButton
         
     # menu->about shown
-    def on_aboutAction_triggered(self):
+    def on_aboutAction_triggered(self) -> None:
         msb = QMessageBox(self)
         msb.setWindowTitle('About')
         msb.setText('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sollicitudin dui pulvinar ante rutrum pretium et non dolor. Quisque pretium sodales nulla, non dapibus magna mollis quis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Maecenas id sodales felis. Mauris nec finibus orci, et vehicula sapien. Cras id nibh mauris. Praesent nec ante vel diam molestie dictum ut in augue. Suspendisse consectetur lacus non odio faucibus tempus. Proin quis eros sodales, condimentum leo non, blandit turpis. Nullam suscipit semper malesuada. Donec massa orci, fermentum ac dignissim sit amet, iaculis sed magna. Nulla ullamcorper efficitur dui, sit amet consequat ligula.')
@@ -344,24 +404,24 @@ class MainWindow(QWidget):
         msb.exec_()
         
     # menu->help shown
-    def on_helpAction_triggered(self):
+    def on_helpAction_triggered(self) -> None:
         msb = QMessageBox(self)
         msb.setWindowTitle('Help')
         msb.setText(helpStr())
         msb.setStandardButtons(QMessageBox.Ok)
         msb.exec_()
         
-    def on_lightStyleAction_triggered(self):
+    def on_lightStyleAction_triggered(self) -> None:
         self.app.setStyleSheet(self.lightStylesheet)
         settings = QSettings()
         settings.setValue('AppStyle', 'light')
 
-    def on_darkStyleAction_triggered(self):
+    def on_darkStyleAction_triggered(self) -> None:
         self.app.setStyleSheet(self.darkStylesheet)
         settings = QSettings()
         settings.setValue('AppStyle', 'dark')
     
-    def on_historyAction_triggered(self):
+    def on_historyAction_triggered(self) -> None:
         self.history.show()
 
     # handle mouse presses
@@ -371,7 +431,7 @@ class MainWindow(QWidget):
             return
 
     # check wether the equation is valid or not
-    def validateEquation(self):
+    def validateEquation(self) -> None:
     
         #TODO: get whether the equation is valid or not from the equation evaluator
         if False:
@@ -382,7 +442,7 @@ class MainWindow(QWidget):
             self.equalButton.setEnabled(True)
         
     # add element to the equation
-    def addTextToEquation(self, functionStr: str):
+    def addTextToEquation(self, functionStr: str) -> None:
 
         # add the string to the current location of the cursor
         self.equationString = self.equationString[:self.cursorPosition] + functionStr + self.equationString[self.cursorPosition:]
@@ -397,7 +457,7 @@ class MainWindow(QWidget):
         #update the equation shown
         self.writeEquation()
 
-    def addArrayFunctionToEquation(self, functionStr: str):
+    def addArrayFunctionToEquation(self, functionStr: str) -> None:
         
         #arrayInput = QInputDialog.getText(self, 'Input values', 'Enter a list of numbers, separated by commas:', inputMethodHints=Qt.ImhFormattedNumbersOnly)[0]
         arrayInput = ArrayInputDialog('Input values', 'Enter a list of numbers, separated by commas:', self)
@@ -406,21 +466,21 @@ class MainWindow(QWidget):
             self.addTextToEquation(functionStr + '(' + arrayInputValues + ')')
 
     # move the cursor 1 step to the left
-    def cursorLeft(self):
+    def cursorLeft(self) -> None:
         self.cursorPosition -= 1
         if self.cursorPosition < 0:
             self.cursorPosition = 0
         self.writeEquation()
         
     # move the cursor 1 step to the right
-    def cursorRight(self):
+    def cursorRight(self) -> None:
         self.cursorPosition += 1
         if self.cursorPosition > len(self.equationString):
             self.cursorPosition = len(self.equationString)
         self.writeEquation()
     
     # write the equation to the label, adding the cursor to the correct location
-    def writeEquation(self):
+    def writeEquation(self) -> None:
 
         # write a _ character under the cursor position
         if self.cursorPosition == len(self.equationString):
@@ -432,7 +492,7 @@ class MainWindow(QWidget):
         self.validateEquation()
         
     # remove the character before the cursor position
-    def backspace(self):
+    def backspace(self) -> None:
         back = self.cursorPosition - 1
         if back < 0:
             back = 0
@@ -441,7 +501,7 @@ class MainWindow(QWidget):
         self.writeEquation()
         
     # remove the character on the cursor position
-    def delete(self):
+    def delete(self) -> None:
         front = self.cursorPosition + 1
         if front > len(self.equationString):
             front = len(self.equationString)
@@ -449,18 +509,22 @@ class MainWindow(QWidget):
         self.writeEquation()
 
     # clear the equation
-    def clearText(self):
+    def clearText(self) -> None:
         self.equationText.setText('_')
         self.equationString = ''
         self.cursorPosition = 0
         
     # computer the equation
-    def compute(self):
+    def compute(self) -> None:
         #TODO: call the interpreter to calculate the value
         answer = 123456.5
         self.history.addEquation(self.equationString, str(answer))
         self.clearText()
         self.addTextToEquation(str(answer))
+
+    def setEquationText(self, equation: str) -> None:
+        self.clearText()
+        self.addTextToEquation(equation)
         
 def main(argv):
 
