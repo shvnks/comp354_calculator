@@ -29,4 +29,3 @@ class FunctionFactorial(FunctionBase):
                 result = result * i
                 i = i - 1
             return result
-        
