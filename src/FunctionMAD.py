@@ -6,23 +6,23 @@ from CalculationErrorException import CalculationErrorException
 class FunctionMad(FunctionBase):
 
     # constructor
-    def __init__(self, *argument) -> None:
+    def __init__(self, arguments: list) -> None:
         super(FunctionMad, self).__init__()
-        self.argument = argument
+        self.arguments = arguments
 
 
 def calculateEquation(self) -> float:
 
     # calculating the mean of inputs
     mean = 0
-    for i in range(0, self.arguments.length):
+    for i in range(0, len(self.arguments)):
         mean += self.arguments[i]
-    mean = mean/self.arguments.length
+    mean = mean/len(self.arguments)
     deviation = 0
     summ = 0
-    for i in range(0, self.arguments.length):
+    for i in range(0, len(self.arguments)):
         deviation = self.arguments[i]-mean
     if deviation < 0:
         deviation = -deviation
     summ += deviation
-    return summ / self.arguments.length
+    return summ / len(self.arguments)
