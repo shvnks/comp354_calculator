@@ -15,7 +15,7 @@ Let  N  be  the  size  of  a  project  team.  The  purpose  of  ETERNITY  is  to
 The permitted set of choices is:
 
 1. arccos(x) worked on by Will
-2. ab^x worked on by Andrei
+2. Gamma Function worked on by Andrei
 3. logb(x) worked on by Shanks
 4. Γ(x) (Gamma Function) TEAM OF 7 therefore no one is working on this function
 5. MAD (Mean Absolute Deviation) worked on by Vatsa
