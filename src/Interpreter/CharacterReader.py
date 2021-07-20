@@ -1,5 +1,5 @@
 """Reads math expression one character at a time."""
-from InterpreterErrors import UnknownElementError
+from InterpreterErrors import UnknownElementError, TooManyDecimalsException
 from Tokens import Token, TokenType
 
 
@@ -38,7 +38,7 @@ class charReader:
                 yield self.generate_Operation()
 
             else:
-                raise UnknownElementError(self.char)
+                raise UnknownElementError(f'UNKNOWN SYMBOL ERROR: {self.char}')
 
     def generate_Number(self):
         """Create the number if the chracters continue representing a digit."""
@@ -57,7 +57,7 @@ class charReader:
             if self.char == '.':
                 num_decimal_points += 1
                 if num_decimal_points > 1:
-                    raise ValueError  # Raise a syntax error for numbers with too many decimal points
+                    raise TooManyDecimalsException('SYNTAX ERROR: Too many decimals')  # Raise a syntax error for numbers with too many decimal points
 
             num = num + self.char  # The number is built character by character
             self.generator()

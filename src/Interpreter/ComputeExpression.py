@@ -13,7 +13,11 @@ class EvaluateExpression:
     def get_Result(self):
         """Return Result of mathematical Expression through Recursion."""
         # Checks for an operation that requires two terms
-        if isinstance(self.tree, AddNode) or isinstance(self.tree, MinusNode) or isinstance(self.tree, MultiplyNode) or isinstance(self.tree, DivideNode) or isinstance(self.tree, PowerNode):
+        if (isinstance(self.tree, AddNode) or
+            isinstance(self.tree, MinusNode) or
+            isinstance(self.tree, MultiplyNode) or
+            isinstance(self.tree, DivideNode) or
+                isinstance(self.tree, PowerNode)):
 
             # Want to always look at the second number to make sure there isn't a higher precedence fucntion to evaluate first, so we recursively call get_Result() on the second term
             mediate_result = EvaluateExpression(self.tree.value2).get_Result()
@@ -42,7 +46,8 @@ class EvaluateExpression:
         elif isinstance(self.tree, PositiveNode):
             mediate_result = EvaluateExpression(self.tree.Node).get_Result()
 
-        elif isinstance(self.tree, FactorialNode):  # Factorial Function
+        # Factorial Function
+        elif isinstance(self.tree, FactorialNode):
             mediate_result = math.factorial(EvaluateExpression(self.tree.Node).get_Result())  # -------------------
 
         else:

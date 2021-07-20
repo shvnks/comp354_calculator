@@ -1,7 +1,7 @@
 """Take individual tokens, and make the math expression."""
 from Tokens import TokenType
 from Nodes import NumberNode, AddNode, MinusNode, PositiveNode, NegativeNode, MultiplyNode, DivideNode, PowerNode, FactorialNode
-from InterpreterErrors import NoExpression
+from InterpreterErrors import NoExpression, MissingParenthesisException, SyntaxException
 
 
 class CreateExpression:
@@ -29,7 +29,7 @@ class CreateExpression:
 
         # Any other token the interpreter missed will raise a Syntax Error. This code mostly raised with missing parenthesis
         if self.current_token is not None:
-            raise ValueError
+            raise MissingParenthesisException('SYNTAX ERROR: Missing parenthesis')
 
         return result
 
@@ -81,7 +81,7 @@ class CreateExpression:
 
         # If the expression reads a token that is just an operator with no Number
         if self.current_token is None:
-            raise ValueError
+            raise SyntaxException('SYNTAX ERROR')
 
         self.generator()  # Move to the next token in the expression
 
@@ -90,12 +90,13 @@ class CreateExpression:
 
             # Checks for a coresponding right parenthesis to close the new expression
             if self.current_token is None or self.current_token.type != TokenType.RIGHTP:
-                raise ValueError
+                raise MissingParenthesisException('SYNTAX ERROR: Missing parenthesis')
 
             self.generator()  # Move past the right parenthesis
 
             # Treat parenthesis as hidden multiplication ()() and ()#
-            if (self.current_token is not None and self.current_token.type is TokenType.LEFTP) or (self.current_token is not None and self.current_token.type is TokenType.NUMBER):
+            if ((self.current_token is not None and self.current_token.type is TokenType.LEFTP)
+                    or (self.current_token is not None and self.current_token.type is TokenType.NUMBER)):
                 result = MultiplyNode(result, self.Acquire_Number())
 
             # Return result from the expression after the left parenthesis
@@ -122,4 +123,4 @@ class CreateExpression:
             return FactorialNode(token.value)
 
         # Any other Syntax Errors will be caught by this raise Exception
-        raise ValueError
+        raise SyntaxException('SYNTAX ERROR')
