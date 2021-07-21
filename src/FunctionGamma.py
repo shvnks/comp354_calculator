@@ -35,7 +35,8 @@ class FunctionGamma(FunctionBase):
                 x += lanczos_coef[i] / (self.num + i)
             t = self.num + len(lanczos_coef) - 1.5
 
-            return (sqrt(2 * self.PI) * FunctionExponent(t, self.num + 0.5).calculateEquation() * FunctionExponent(self.e,-t).calculateEquation() * x).real
+            return (sqrt(2 * self.PI) * FunctionExponent(t, self.num + 0.5).calculateEquation() * FunctionExponent(
+                self.e, -t).calculateEquation() * x).real
             # return sqrt(2*pi) * t**(z+0.5) * exp(-t) * x
 
 
@@ -51,12 +52,6 @@ class Complex:
         return result
 
 
-# def absolute(self, number):
-#     if number < 0:
-#         return number * -1
-#     else:
-#         return number
-
 def simple_abs(num):
     val = -num if num < 0 else num
     if val == -0.0:
@@ -64,46 +59,6 @@ def simple_abs(num):
     else:
         return val
 
-
-# def Square(n, i, j):
-#     mid = (i + j) / 2
-#     mul = mid * mid
-#
-#     # If mid itself is the square root,
-#     # return mid
-#     if (mul == n) or (simple_abs(mul - n) < 0.00001):
-#         return mid
-#
-#     # If mul is less than n, recur second half
-#     elif mul < n:
-#         return Square(n, mid, j)
-#
-#     # Else recur first half
-#     else:
-#         return Square(n, i, mid)
-#
-#
-# # Function to find the square root of n
-# def findSqrt(num):
-#     i = 1
-#
-#     # While the square root is not found
-#     found = False
-#     while found is False:
-#
-#         # If n is a perfect square
-#         if i * i == num:
-#             print(i)
-#             found = True
-#
-#         elif i * i > num:
-#
-#             # Square root will lie in the
-#             # interval i-1 and i
-#             res = Square(num, i - 1, i)
-#             print("{0:.5f}".format(res))
-#             found = True
-#         i += 1
 
 def sqrt(N):
     if N < 0:
@@ -113,7 +68,7 @@ def sqrt(N):
         # print(f'Square root of number {N}: {FunctionExponent(N, 1/2.0).calculateEquation()}')
         return FunctionExponent(N, 1 / 2.0).calculateEquation()
 
+
 # Driver code
 if __name__ == '__main__':
-    print(FunctionGamma(2).calculateEquation())
-
+    print(FunctionGamma(2.5).calculateEquation())
