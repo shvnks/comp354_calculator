@@ -40,7 +40,7 @@ class FunctionGamma(FunctionBase):
             # return sqrt(2*pi) * t**(self.num+0.5) * exp(-t) * x
 
 # A simple absolute function
-def simple_abs(num):
+def simpleAbs(num):
     val = -num if num < 0 else num
     if val == -0.0:
         return 0.0
