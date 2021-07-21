@@ -3,7 +3,6 @@ from FunctionExponent import FunctionExponent
 from FunctionSinh import FunctionSinh
 from CalculationErrorException import CalculationErrorException
 
-g = 7
 lanczos_coef = [
     0.99999999999980993,
     676.5203681218851,
@@ -23,20 +22,24 @@ class FunctionGamma(FunctionBase):
         super(FunctionGamma, self).__init__()
         self.num = num
 
+    # Gamma Function
+    # Input: Value to calculate
+    # Output: Result from gamma function
     def calculateEquation(self) -> float:
         if self.num < 0.5:
             return (self.PI / (FunctionSinh(self.PI * self.num).calculateEquation() * FunctionGamma(1 - self.num).calculateEquation()))
-            # return pi / (sin(pi*z)*gamma(1-z))
+            # return pi / (sin(pi*self.num)*gamma(1-z))
         else:
             self.num -= 1
             x = lanczos_coef[0]
-            for i in range(1, g + 2):
+            for i in range(1, 9):
                 x += lanczos_coef[i] / (self.num + i)
             t = self.num + len(lanczos_coef) - 1.5
 
             return (sqrt(2 * self.PI) * FunctionExponent(t, self.num + 0.5).calculateEquation() * FunctionExponent(self.e, -t).calculateEquation() * x)
-            # return sqrt(2*pi) * t**(z+0.5) * exp(-t) * x
+            # return sqrt(2*pi) * t**(self.num+0.5) * exp(-t) * x
 
+# A simple absolute function
 def simple_abs(num):
     val = -num if num < 0 else num
     if val == -0.0:
@@ -44,7 +47,7 @@ def simple_abs(num):
     else:
         return val
 
-
+# A simple square root function
 def sqrt(N):
     if N < 0:
         print('Square root of negative number does not exist!')
@@ -56,4 +59,4 @@ def sqrt(N):
 
 # Driver code
 if __name__ == '__main__':
-    print(FunctionGamma(3.5).calculateEquation())
+    print(FunctionGamma(2.0).calculateEquation())
