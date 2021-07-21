@@ -41,6 +41,7 @@ class Interpreter:
             mathEXP = CreateExpression(tokens)
             tree = mathEXP.read_Tokens()
             expression = EvaluateExpression(tree)
+            result = expression.get_Result()
             
         except TooManyDecimalsException as T:
             return (None, False, str(T))
@@ -55,5 +56,5 @@ class Interpreter:
         except NoExpression:
             pass
 
-        return (expression.get_Result(), True, 'No Error')
+        return (result, True, 'No Error')
         
