@@ -25,8 +25,7 @@ class FunctionGamma(FunctionBase):
 
     def calculateEquation(self) -> float:
         if self.num < 0.5:
-            return (self.PI / (FunctionSinh(self.PI * self.num).calculateEquation() * FunctionGamma(
-                1 - self.num).calculateEquation())).real
+            return (self.PI / (FunctionSinh(self.PI * self.num).calculateEquation() * FunctionGamma(1 - self.num).calculateEquation()))
             # return pi / (sin(pi*z)*gamma(1-z))
         else:
             self.num -= 1
@@ -35,22 +34,8 @@ class FunctionGamma(FunctionBase):
                 x += lanczos_coef[i] / (self.num + i)
             t = self.num + len(lanczos_coef) - 1.5
 
-            return (sqrt(2 * self.PI) * FunctionExponent(t, self.num + 0.5).calculateEquation() * FunctionExponent(
-                self.e, -t).calculateEquation() * x).real
+            return (sqrt(2 * self.PI) * FunctionExponent(t, self.num + 0.5).calculateEquation() * FunctionExponent(self.e, -t).calculateEquation() * x)
             # return sqrt(2*pi) * t**(z+0.5) * exp(-t) * x
-
-
-class Complex:
-    def __init__(self, real, imag):
-        self.real = real
-        self.img = imag
-
-    def add(self, number):
-        real = self.real + number.real
-        imag = self.imag + number.imag
-        result = Complex(real, imag)
-        return result
-
 
 def simple_abs(num):
     val = -num if num < 0 else num
@@ -71,4 +56,4 @@ def sqrt(N):
 
 # Driver code
 if __name__ == '__main__':
-    print(FunctionGamma(2.5).calculateEquation())
+    print(FunctionGamma(3.5).calculateEquation())
