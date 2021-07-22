@@ -1,6 +1,7 @@
 from FunctionBase import FunctionBase
 from CalculationErrorException import CalculationErrorException
 from FunctionExponent import FunctionExponent
+from FunctionAbs import FunctionAbs
 
 # FunctionLog: Class used to evaluate logarithm
 class FunctionLog(FunctionBase):
@@ -30,7 +31,7 @@ class FunctionLog(FunctionBase):
             add = FunctionExponent(-1, k + 1).calculateEquation() * FunctionExponent(x, i).calculateEquation() / i
 
             # stop when the difference is smaller than 0.0000000001
-            if abs(add) < 0.0000000001:
+            if FunctionAbs(add).calculateEquation() < 0.0000000001:
                 break
             sum += add
 
@@ -42,7 +43,7 @@ class FunctionLog(FunctionBase):
     def calculateEquation(self) -> float:
 
         # validating both base and argument provided
-        if self.x > 0 and self.b > 1:
+        if self.n > 0 and self.b > 1:
 
             # using log identity: log_b(n) = log_x(n) / log_x(b)
             result = ln(self.n) / ln(self.b)
@@ -53,6 +54,6 @@ class FunctionLog(FunctionBase):
             elif(result < self.MIN_RESULT):
                 raise CalculationErrorException("result too small")
 
-            return round(result,5)
+            return result
         else:
-            raise CalculationErrorException("Invalid input, check if the base is positive and greater than 1 as well as if the argument provided is positive.")
+            raise CalculationErrorException("Invalid input, validate base and argument values.")
