@@ -39,14 +39,6 @@ class FunctionGamma(FunctionBase):
             return (sqrt(2 * self.PI) * FunctionExponent(t, self.num + 0.5).calculateEquation() * FunctionExponent(self.e, -t).calculateEquation() * x)
             # return sqrt(2*pi) * t**(self.num+0.5) * exp(-t) * x
 
-# A simple absolute function
-def simpleAbs(num):
-    val = -num if num < 0 else num
-    if val == -0.0:
-        return 0.0
-    else:
-        return val
-
 # A simple square root function
 def sqrt(N):
     if N < 0:
@@ -59,4 +51,4 @@ def sqrt(N):
 
 # Driver code
 if __name__ == '__main__':
-    print(FunctionGamma(2.0).calculateEquation())
+    print(FunctionGamma(1).calculateEquation())
