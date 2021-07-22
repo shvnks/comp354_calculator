@@ -18,14 +18,14 @@ class FunctionLog(FunctionBase):
         # x represents the exponent
         x = y - 1
 
-        # k represents the starting integer for the riemann sum
-        k = 1
+        # i represents the starting integer for the riemann sum
+        i = 1
 
         # creating sum var
         sum = 0
 
         # loop until the end condition is met
-        while True:
+        for k in range(self.MAX_TERMS):
 
             # adding the values
             add = FunctionExponent(-1, k + 1).calculateEquation() * FunctionExponent(x, i).calculateEquation() / i
@@ -37,6 +37,7 @@ class FunctionLog(FunctionBase):
 
             # move to the next integer in the riemann sum
             i += 1
+            k += 1
         return sum
 
     # calculateEquation: Method that is called to calculate any exponents
@@ -50,9 +51,9 @@ class FunctionLog(FunctionBase):
 
             # handle exceptions for results that are too large or small
             if(result > self.MAX_RESULT):
-                raise CalculationErrorException("result too large")
+                raise CalculationErrorException("Result too large")
             elif(result < self.MIN_RESULT):
-                raise CalculationErrorException("result too small")
+                raise CalculationErrorException("Result too small")
 
             return result
         else:
