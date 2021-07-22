@@ -27,7 +27,7 @@ class FunctionLog(FunctionBase):
         while True:
 
             # adding the values
-            add = FunctionExponent(-1).calculateEquation(k + 1) * FunctionExponent(x).calculateEquation(i) / i
+            add = FunctionExponent(-1, k + 1).calculateEquation() * FunctionExponent(x, i).calculateEquation() / i
 
             # stop when the difference is smaller than 0.0000000001
             if abs(add) < 0.0000000001:
@@ -38,7 +38,7 @@ class FunctionLog(FunctionBase):
             i += 1
         return sum
 
-    # # calculateEquation: Method that is called to calculate any exponents
+    # calculateEquation: Method that is called to calculate any exponents
     def calculateEquation(self) -> float:
 
         # validating both base and argument provided
