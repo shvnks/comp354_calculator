@@ -37,7 +37,6 @@ class FunctionLog(FunctionBase):
 
             # move to the next integer in the riemann sum
             i += 1
-            k += 1
         return sum
 
     # calculateEquation: Method that is called to calculate any exponents
