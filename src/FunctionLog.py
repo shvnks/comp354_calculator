@@ -7,7 +7,7 @@ class FunctionLog(FunctionBase):
 
     # constructor: initialize the class, takes in b and b such that log_b(n)
     def __init__(self, b: float, n: float) -> None:
-        super(FunctionExponent, self).__init__()
+        super(FunctionLog, self).__init__()
         self.b = b #base
         self.n = n #value
 
