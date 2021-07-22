@@ -50,9 +50,9 @@ class FunctionLog(FunctionBase):
 
             # handle exceptions for results that are too large or small
             if(result > self.MAX_RESULT):
-                raise CalculationErrorException("Result too large")
+                raise CalculationErrorException("MATH ERROR: Result too large")
             elif(result < self.MIN_RESULT):
-                raise CalculationErrorException("Result too small")
+                raise CalculationErrorException("MATH ERROR: Result too small")
 
             return result
         else:
