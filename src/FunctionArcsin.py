@@ -1,8 +1,8 @@
 
+
 from FunctionBase import FunctionBase
 from CalculationErrorException import CalculationErrorException
 import math
-
 
 # FunctionArcsin: Class use to define and calculate Arcsin(x)
 class FunctionAcrsin(Functionbase):
@@ -32,19 +32,3 @@ class FunctionAcrsin(Functionbase):
             sum1 += x1 * x2
 
         return sum1
-
-    def my_arccos(x):
-            # To achieve Arccos(x) simply divide 2/pi - Arcsin(x)
-            my_pi = 3.141592653589793238
-            arccos = ((my_pi/2)-my_arcsin(x))
-            return arccos
-
-        
-x = float(input('Enter 1st number: '))
-print("My Arcsin value    ", my_arcsin(x)) 
-print("Actual Arcsin value", math.asin(x))    
-print("My Arccos value    ", my_arccos(x))    
-print("Actual Arcsin value", math.acos(x)) 
-
-
-    
