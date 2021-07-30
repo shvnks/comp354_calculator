@@ -17,7 +17,7 @@ class FunctionTanh(FunctionBase):
 
         #if the number is in degrees, convert it to radians
         if(isDeg):
-            self.num = self.num * self.PI/180
+            self.num = self.degreeToRadian(self.num)
             
         #calculate tanh(num) using sinh(num)/cosh(num)
         # https://www.whitman.edu/mathematics/calculus_online/section04.11.html
