@@ -17,3 +17,6 @@ class FunctionBase(ABC):
     @abstractmethod
     def calculateEquation(self) -> float:
         raise NotImplementedError()
+
+    def degreeToRadian(self, degreeValue):
+        return degreeValue * self.PI/180
