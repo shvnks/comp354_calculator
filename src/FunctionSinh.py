@@ -1,5 +1,5 @@
 from FunctionBase import FunctionBase
-from FunctionExponent import FunctionExponent
+import FunctionExponent
 from CalculationErrorException import CalculationErrorException
 
 class FunctionSinh(FunctionBase):
@@ -22,8 +22,8 @@ class FunctionSinh(FunctionBase):
             
         # Calculate sinh using (e^x-e^-x)/2 where x is the input
         # https://www.whitman.edu/mathematics/calculus_online/section04.11.html
-        num1 = FunctionExponent(self.e, self.num).calculateEquation()
-        num2 = FunctionExponent(self.e, -self.num).calculateEquation()
+        num1 = FunctionExponent.FunctionExponent(self.e, self.num).calculateEquation()
+        num2 = FunctionExponent.FunctionExponent(self.e, -self.num).calculateEquation()
         result = (num1-num2)/2
         
         # Handle exceptions. We don't want a number too large or small

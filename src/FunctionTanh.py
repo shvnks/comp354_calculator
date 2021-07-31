@@ -1,7 +1,7 @@
 from FunctionBase import FunctionBase
 from CalculationErrorException import CalculationErrorException
-from FunctionSinh import FunctionSinh
-from FunctionCosh import FunctionCosh
+import FunctionSinh
+import FunctionCosh
 
 class FunctionTanh(FunctionBase):
     '''Class used to calculate the Cosh function.'''
@@ -23,8 +23,8 @@ class FunctionTanh(FunctionBase):
             
         # Calculate tanh(x) using sinh(x)/cosh(x), where x is self.num
         # https://www.whitman.edu/mathematics/calculus_online/section04.11.html
-        num1 = FunctionSinh(self.num).calculateEquation()
-        num2 = FunctionCosh(-self.num).calculateEquation()
+        num1 = FunctionSinh.FunctionSinh(self.num).calculateEquation()
+        num2 = FunctionCosh.FunctionCosh(-self.num).calculateEquation()
         result = num1/num2
                
         return result
