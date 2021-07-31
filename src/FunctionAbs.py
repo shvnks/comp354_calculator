@@ -2,25 +2,26 @@
 from CalculationErrorException import CalculationErrorException
 from FunctionBase import FunctionBase
 
-import math
-
-# FunctionExponent: Class used to evaluate exponents
 class FunctionAbs(FunctionBase):
+    '''Class used to calculate the Absolute function.'''
 
-    # constructor: initialize the class, takes in x and y such that x^y
     def __init__(self, x: float) -> None:
+        '''Constructor.'''
         super(FunctionAbs, self).__init__()
         self.x = x
 
-    # calculateEquation: Method that is called to calculate any exponents
     def calculateEquation(self) -> float:
+        '''
+            Function used to calculate the absolute value.
+            Returns |self.x|
+        '''
         result = self.x
         if result < 0:
             result = -1 * result
         
         if result > self.MAX_RESULT:
-            raise CalculationErrorException('Result too high')
+            raise CalculationErrorException('MATH ERROR: Result too high')
         if result < self.MIN_RESULT:
-            raise CalculationErrorException('Result too low')
+            raise CalculationErrorException('MATH ERROR: Result too low')
 
         return result
