@@ -1,17 +1,16 @@
-
 from FunctionBase import FunctionBase
 from CalculationErrorException import CalculationErrorException
 
-# FunctionFactorial: Class used to evaluate factorials
 class FunctionFactorial(FunctionBase):
+    '''Class used to calculate the factorial function.'''
 
-    # constructor: initialize the class, takes in x such that x!
     def __init__(self, x: int) -> None:
+        '''Constructor.'''
         super(FunctionFactorial, self).__init__()
         self.x = x
 
-    # calculateEquation: Method that is called to calculate any factorials
     def calculateEquation(self) -> int:
+        '''Function used to calculate factorial'''
 
         # (-x)! is not valid
         if self.x < 0:
