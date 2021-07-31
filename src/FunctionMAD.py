@@ -1,5 +1,4 @@
 from FunctionBase import FunctionBase
-from FunctionExponent import FunctionExponent
 from CalculationErrorException import CalculationErrorException
 
 
