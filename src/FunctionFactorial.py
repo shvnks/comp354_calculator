@@ -12,6 +12,9 @@ class FunctionFactorial(FunctionBase):
     def calculateEquation(self) -> int:
         '''Function used to calculate factorial'''
 
+        if isinstance(self.x, float):
+            raise CalculationErrorException('Invalid Input: Factorial input cannot be a decimal value.')
+
         # (-x)! is not valid
         if self.x < 0:
             raise CalculationErrorException('Invalid Input: Factorial input cannot be negative.')
