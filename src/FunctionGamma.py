@@ -16,39 +16,32 @@ lanczos_coef = [
 
 
 class FunctionGamma(FunctionBase):
+    '''Class used to calculate the Gamma function.'''
 
-    # constructor
     def __init__(self, num: float) -> None:
+        '''Constructor.'''
         super(FunctionGamma, self).__init__()
         self.num = num
 
-    # Gamma Function
-    # Input: Value to calculate
-    # Output: Result from gamma function
     def calculateEquation(self) -> float:
+        '''
+            Function used to calculate the gamma function.
+            Returns Gamma(self.num)
+        '''
         if self.num < 0.5:
             return (self.PI / (FunctionSinh(self.PI * self.num).calculateEquation() * FunctionGamma(1 - self.num).calculateEquation()))
-            # return pi / (sin(pi*self.num)*gamma(1-z))
         else:
             self.num -= 1
             x = lanczos_coef[0]
+            
             for i in range(1, 9):
                 x += lanczos_coef[i] / (self.num + i)
+            
             t = self.num + len(lanczos_coef) - 1.5
 
-            return (sqrt(2 * self.PI) * FunctionExponent(t, self.num + 0.5).calculateEquation() * FunctionExponent(self.e, -t).calculateEquation() * x)
-            # return sqrt(2*pi) * t**(self.num+0.5) * exp(-t) * x
-
-# A simple square root function
-def sqrt(N):
-    if N < 0:
-        print('Square root of negative number does not exist!')
-        return
-    else:
-        # print(f'Square root of number {N}: {FunctionExponent(N, 1/2.0).calculateEquation()}')
-        return FunctionExponent(N, 1 / 2.0).calculateEquation()
+            return (FunctionExponent(2 * self.PI, 0.5).calculateEquation() * FunctionExponent(t, self.num + 0.5).calculateEquation() * FunctionExponent(self.e, -t).calculateEquation() * x)
 
 
-# Driver code
+# Test Code
 if __name__ == '__main__':
     print(FunctionGamma(1).calculateEquation())

@@ -7,7 +7,9 @@ In  the  rest  of  the  document,  both  the  project  and  the  product  are  m
 
 ETERNITY involves both individual work as well as communal work.
 
-Requirements: Python >= 3.7.1
+Requirements: 
+ - Python >= 3.7.1
+ - PyQt5 >= 5.15.4
 
 A transcendental  function  is  a  function  that  does  not  satisfy  any  single-variable  polynomial   equation   whose   coefficients   are   themselves   roots   of   polynomials.   For   example, sin(x) is a transcendental function, but √x is not.
 
