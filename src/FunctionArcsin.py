@@ -1,5 +1,6 @@
 from FunctionBase import FunctionBase
 from CalculationErrorException import CalculationErrorException
+import FunctionExponent
 
 class FunctionArcsin(FunctionBase):
     '''Class used to calculate the arcsin function.'''    
@@ -16,8 +17,9 @@ class FunctionArcsin(FunctionBase):
         '''
 
         # If the number is in degrees, convert it to radians
+        num = self.num
         if(isDeg):
-            self.num = self.degreeToRadian(self.num)
+            num = self.degreeToRadian(num)
     
         sum = 0
 
@@ -25,7 +27,7 @@ class FunctionArcsin(FunctionBase):
         for n in range(0, self.MAX_TERMS):
 
             # Formula of the Talor series in terms of the integration for arcsin
-            x1 = (  self.num ** (2 * n + 1)) / (2 * n + 1) / float(2 ** (2 * n))
+            x1 = FunctionExponent.FunctionExponent(num, (2 * n + 1)).calculateEquation() / (2 * n + 1) / float(2 ** (2 * n))
             x2 = float(1)        
         
             #top numerator of the integration 
