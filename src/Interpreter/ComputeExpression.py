@@ -1,6 +1,11 @@
 """Give the answer to the tree."""
 from Nodes import AddNode, MinusNode, PositiveNode, NegativeNode, MultiplyNode, DivideNode, PowerNode, FactorialNode, TrigNode, LogNode, SquareRootNode, GammaNode, StandardDeviationNode, MADNode
 import math
+import sys
+sys.path.insert(0, 'C:\\Users\\Nicholas\\Desktop\\COMP354\\comp354_calculator\\src')
+from FunctionStandardDeviation import FunctionStandardDeviation
+from FunctionGamma import FunctionGamma
+# from FunctionMAD import FunctionMAD
 
 
 class EvaluateExpression:
@@ -81,10 +86,10 @@ class EvaluateExpression:
             mediate_result = EvaluateExpression(self.tree.Node).getResult()*2
 
         elif isinstance(self.tree, StandardDeviationNode):
-            mediate_result = EvaluateExpression(self.computeList(self.tree.Node))
+            mediate_result = FunctionStandardDeviation(self.computeList(self.tree.Node)).standardDeviation()
 
         elif isinstance(self.tree, MADNode):
-            mediate_result = 0
+            mediate_result = FunctionMAD(self.computeList(self.tree.Node)).calculateEquation()
 
         else:
             # When the second term in an expression is calculated, we can now perform the operation with the first term
@@ -98,7 +103,6 @@ class EvaluateExpression:
         newlist = []
         for i in list:
             result = EvaluateExpression(i).getResult()
-            print('HI ' + str(result))
             newlist.append(result)
 
         return newlist

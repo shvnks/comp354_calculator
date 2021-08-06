@@ -1,6 +1,6 @@
 """Take individual tokens, and make the math expression."""
 from Tokens import TokenType
-from Nodes import NumberNode, AddNode, MinusNode, PositiveNode, NegativeNode, MultiplyNode, DivideNode, PowerNode, FactorialNode, TrigNode, LogNode, SquareRootNode, GammaNode, StandardDeviationNode
+from Nodes import NumberNode, AddNode, MinusNode, PositiveNode, NegativeNode, MultiplyNode, DivideNode, PowerNode, FactorialNode, TrigNode, LogNode, SquareRootNode, GammaNode, StandardDeviationNode, MADNode
 from InterpreterErrors import NoExpression, MissingParenthesisException, SyntaxException
 
 
@@ -163,9 +163,9 @@ class CreateExpression:
         elif token.type is TokenType.LOGARITHMIC:
             return LogNode(self.acquireNumber(True), self.acquireNumber(True))
 
-        # elif token.type is TokenType.MAD:
-        #     return 0
-        #
+        elif token.type is TokenType.MAD:
+            return MADNode(self.acquireNumber())
+
         elif token.type is TokenType.GAMMA:
             return GammaNode(self.evaluateHighestPrecedence(True))
 
