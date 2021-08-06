@@ -308,7 +308,7 @@ class MainWindow(QMainWindow):
 
         # Get the light and dark mode stylesheet
         self.lightStylesheet = self.app.styleSheet()
-        darkStylesheetFile = QFile(QFileInfo(os.path.realpath(__file__)).absolutePath() + '/darkstyle.qss')
+        darkStylesheetFile = QFile('darkstyle.qss')
         darkStylesheetFile.open(QFile.ReadOnly | QFile.Text)
         stream = QTextStream(darkStylesheetFile)
         self.darkStylesheet = stream.readAll()
