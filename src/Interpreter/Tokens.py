@@ -16,10 +16,18 @@ class TokenType(Enum):
     POWER = 5
     FACTORIAL = 6
     TRIG = 7
-    STANDARDDEVIATION = 8
-    GAMMA = 9
-    LEFTP = 10
-    RIGHTP = 11
+    LOGARITHMIC = 8
+    STANDARDDEVIATION = 9
+    GAMMA = 10
+    MAD = 11
+    PI = 12
+    E = 13
+    SQUAREROOT = 14
+    LEFTP = 15
+    RIGHTP = 16
+    LEFTB = 17
+    RIGHTB = 18
+    COMMA = 19
 
 
 @dataclass

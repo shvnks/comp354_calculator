@@ -1,5 +1,5 @@
 """Reads math expression one character at a time."""
-from InterpreterErrors import UnknownElementError, TooManyDecimalsException
+from InterpreterErrors import UnknownElementError, TooManyDecimalsException, SyntaxException
 from Tokens import Token, TokenType
 
 
@@ -7,7 +7,7 @@ class charReader:
     """Class reading character's one by one."""
 
     # Possible Operations and digits that can be read
-    OPERATIONS = '+-*/!^()'
+    OPERATIONS = '+-*/!^()\u221a[]'
     DIGITS = '0123456789.'
 
     def __init__(self, exp):
@@ -22,25 +22,61 @@ class charReader:
         except StopIteration:
             self.char = None
 
-    def create_Tokens(self):
+    def createTokens(self):
         """Check Expression character by character by using a generator."""
         while self.char is not None:
             # If we see a digit, we know it is the beginning of a number
             if self.char in self.DIGITS:
-                yield self.generate_Number()
+                yield self.generateNumber()
 
-            elif self.char in ' \t\n':  # Any form of whitespace is ignored
+            elif self.char in ' \t\n,':  # Any form of whitespace is ignored
                 self.generator()
                 pass
 
             # Reading an operation will generate an operation token
             elif self.char in self.OPERATIONS:
-                yield self.generate_Operation()
+                yield self.generateOperation()
+
+            # Reading letters for the beginning of a trig, or special function (MAD, Gamma, σ)
+            elif self.char in 'ascltMσΓ':
+                yield self.generateFunction()
+
+            elif self.char in '\u03c0':
+                self.generator()
+                yield Token(TokenType.PI, float(3.1415926535897932384626433))
+
+            elif self.char in 'e':
+                self.generator()
+                yield Token(TokenType.E, float(2.7182818284590452353602874))
 
             else:
                 raise UnknownElementError(f'UNKNOWN SYMBOL ERROR: {self.char}')
 
-    def generate_Number(self):
+    def generateFunction(self):
+        """Create the token for a special function."""
+        functionName = self.char
+        self.generator()
+
+        while self.char is not None and functionName not in ['sin', 'cos', 'tan', 'arcsin', 'arccos', 'arctan', 'log', 'MAD', 'σ', 'Γ']:
+            functionName = functionName + self.char
+            self.generator()
+
+        if self.char == 'h' and functionName in ['sin', 'cos', 'tan']:
+            functionName = functionName + self.char
+            self.generator()
+
+        if functionName == 'log':
+            return Token(TokenType.LOGARITHMIC, functionName)
+        elif functionName == 'MAD':
+            return Token(TokenType.MAD, 'MAD')
+        elif functionName == 'Γ':
+            return Token(TokenType.GAMMA, 'Γ')
+        elif functionName == 'σ':
+            return Token(TokenType.STANDARDDEVIATION, 'σ')
+
+        return Token(TokenType.TRIG, functionName)
+
+    def generateNumber(self):
         """Create the number if the chracters continue representing a digit."""
         num = self.char
         num_decimal_points = 0
@@ -65,7 +101,7 @@ class charReader:
         # Return the number TokenType with the float value of it
         return Token(TokenType.NUMBER, float(num))
 
-    def generate_Operation(self):
+    def generateOperation(self):
         """Return the token of the operation."""
         operation = self.char
         self.generator()
@@ -78,6 +114,8 @@ class charReader:
             return Token(TokenType.MULTIPLICATION, '*')
         elif(operation == '/'):
             return Token(TokenType.DIVISION, '/')
+        elif(operation == '\u221a'):
+            return Token(TokenType.SQUAREROOT, '\u221a')
         elif(operation == '^'):
             return Token(TokenType.POWER, '^')
         elif(operation == '!'):
@@ -86,3 +124,7 @@ class charReader:
             return Token(TokenType.LEFTP, '(')
         elif(operation == ')'):
             return Token(TokenType.RIGHTP, ')')
+        elif(operation == '['):
+            return Token(TokenType.LEFTB, '[')
+        elif(operation == ']'):
+            return Token(TokenType.RIGHTB, ']')
