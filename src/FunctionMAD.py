@@ -20,16 +20,16 @@ class FunctionMad(FunctionBase):
         for i in range(0, len(self.arguments)):
             mean += self.arguments[i]
         mean = mean/len(self.arguments)
-        
+
         deviation = 0
         summ = 0
-        
+
         # Calculate deviation
         for i in range(0, len(self.arguments)):
             deviation = self.arguments[i]-mean
         if deviation < 0:
             deviation = -deviation
-        
+
         summ += deviation
-        
+
         return summ / len(self.arguments)

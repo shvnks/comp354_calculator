@@ -5,15 +5,7 @@ import sys
 sys.path.insert(0, 'C:\\Users\\Nicholas\\Desktop\\COMP354\\comp354_calculator\\src')
 from FunctionStandardDeviation import FunctionStandardDeviation
 from FunctionGamma import FunctionGamma
-from FunctionMAD import FunctionMAD
-from FunctionLog import FunctionLog
-from FunctionArccos import FunctionArccos
-from FunctionArcsin import FunctionArcsin
-from FunctionSinh import FunctionSinh
-from FunctionTanh import FunctionTanh
-from FunctionCosh import FunctionCosh
-from FunctionExponent import FunctionExponent
-from FunctionFactorial import FunctionFactorial
+# from FunctionMAD import FunctionMAD
 
 
 class EvaluateExpression:
@@ -48,7 +40,7 @@ class EvaluateExpression:
                 mediate_result = EvaluateExpression(self.tree.value1).getResult() / mediate_result
 
             elif isinstance(self.tree, PowerNode):  # Evaluate Power
-                mediate_result = FunctionExponent(EvaluateExpression(self.tree.value1).getResult(), mediate_result).calculateEquation()
+                mediate_result = EvaluateExpression(self.tree.value1).getResult()**mediate_result  # ---------------------
 
         # Checks for the operation that requires just a single number
         # Evaluates a negative number
@@ -61,10 +53,10 @@ class EvaluateExpression:
 
         # Factorial Function
         elif isinstance(self.tree, FactorialNode):
-            mediate_result = FunctionFactorial(EvaluateExpression(self.tree.Node).getResult()).calculateEquation()
+            mediate_result = math.factorial(EvaluateExpression(self.tree.Node).getResult())  # -------------------
 
         elif isinstance(self.tree, SquareRootNode):
-            mediate_result = FunctionExponent(EvaluateExpression(self.tree.Node).getResult(), 0.5).calculateEquation()
+            mediate_result = EvaluateExpression(self.tree.Node).getResult()**0.5
 
         # Evaluates a Trigonometry function, inverse trigonometric function or hyperbolic trigonometry funciton
         elif isinstance(self.tree, TrigNode):
@@ -75,23 +67,23 @@ class EvaluateExpression:
             if self.tree.function == 'tan':
                 mediate_result = math.tan(EvaluateExpression(self.tree.Node).getResult())
             if self.tree.function == 'arcsin':
-                mediate_result = FunctionArcsin(EvaluateExpression(self.tree.Node).getResult()).calculateEquation()
+                mediate_result = math.asin(EvaluateExpression(self.tree.Node).getResult())
             if self.tree.function == 'arccos':
-                mediate_result = FunctionArccos(EvaluateExpression(self.tree.Node).getResult()).calculateEquation()
+                mediate_result = math.acos(EvaluateExpression(self.tree.Node).getResult())
             if self.tree.function == 'arctan':
                 mediate_result = math.atan(EvaluateExpression(self.tree.Node).getResult())
             if self.tree.function == 'sinh':  #
-                mediate_result = FunctionSinh(EvaluateExpression(self.tree.Node).getResult()).calculateEquation()
+                mediate_result = math.sinh(EvaluateExpression(self.tree.Node).getResult())
             if self.tree.function == 'cosh':  #
-                mediate_result = FunctionCosh(EvaluateExpression(self.tree.Node).getResult()).calculateEquation()
+                mediate_result = math.cosh(EvaluateExpression(self.tree.Node).getResult())
             if self.tree.function == 'tanh':  #
-                mediate_result = FunctionTanh(EvaluateExpression(self.tree.Node).getResult()).calculateEquation()
+                mediate_result = math.tanh(EvaluateExpression(self.tree.Node).getResult())
 
-        elif isinstance(self.tree, LogNode):
-            mediate_result = FunctionLog(EvaluateExpression(self.tree.value2).getResult(), EvaluateExpression(self.tree.value1).getResult()).calculateEquation()
+        elif isinstance(self.tree, LogNode):  #
+            mediate_result = math.log(EvaluateExpression(self.tree.value2).getResult(), EvaluateExpression(self.tree.value1).getResult())
 
-        elif isinstance(self.tree, GammaNode):
-            mediate_result = FunctionGamma(EvaluateExpression(self.tree.Node).getResult()).calculateEquation()
+        elif isinstance(self.tree, GammaNode):  #
+            mediate_result = EvaluateExpression(self.tree.Node).getResult()*2
 
         elif isinstance(self.tree, StandardDeviationNode):
             mediate_result = FunctionStandardDeviation(self.computeList(self.tree.Node)).standardDeviation()

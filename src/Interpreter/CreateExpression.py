@@ -4,6 +4,7 @@ from Nodes import NumberNode, AddNode, MinusNode, PositiveNode, NegativeNode, Mu
 from InterpreterErrors import NoExpression, MissingParenthesisException, SyntaxException
 
 
+# 5cos0^3
 class CreateExpression:
     """Create Expression => knowing what the expression is asking."""
 
@@ -162,11 +163,9 @@ class CreateExpression:
         elif token.type is TokenType.LOGARITHMIC:
             return LogNode(self.acquireNumber(True), self.acquireNumber(True))
 
-        # Case for MAD Function
         elif token.type is TokenType.MAD:
             return MADNode(self.acquireNumber())
 
-        # Case for Gamma Function
         elif token.type is TokenType.GAMMA:
             return GammaNode(self.evaluateHighestPrecedence(True))
 

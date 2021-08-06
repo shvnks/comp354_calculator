@@ -33,10 +33,10 @@ class FunctionGamma(FunctionBase):
         else:
             self.num -= 1
             x = lanczos_coef[0]
-            
+
             for i in range(1, 9):
                 x += lanczos_coef[i] / (self.num + i)
-            
+
             t = self.num + len(lanczos_coef) - 1.5
 
             return (FunctionExponent(2 * self.PI, 0.5).calculateEquation() * FunctionExponent(t, self.num + 0.5).calculateEquation() * FunctionExponent(self.e, -t).calculateEquation() * x)

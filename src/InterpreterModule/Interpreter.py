@@ -8,15 +8,15 @@ class Interpreter:
         self.equation = equation
 
     def isValid(self) -> tuple[bool, str]:
-        
+
         try:
-            
+
             readchars = charReader(self.equation)
             tokens = readchars.create_Tokens()
             mathEXP = CreateExpression(tokens)
             tree = mathEXP.read_Tokens()
             expression = EvaluateExpression(tree)
-            
+
         except TooManyDecimalsException as T:
             return (False, str(T))
         except UnknownElementError as U:
@@ -35,14 +35,14 @@ class Interpreter:
     def evaluateEquation(self) -> tuple[float, bool, str]:
 
         try:
-            
+
             readchars = charReader(self.equation)
             tokens = readchars.create_Tokens()
             mathEXP = CreateExpression(tokens)
             tree = mathEXP.read_Tokens()
             expression = EvaluateExpression(tree)
             result = expression.get_Result()
-            
+
         except TooManyDecimalsException as T:
             return (None, False, str(T))
         except UnknownElementError as U:
@@ -57,4 +57,3 @@ class Interpreter:
             pass
 
         return (result, True, 'No Error')
-        
