@@ -2,6 +2,7 @@ from CharacterReader import charReader
 from InterpreterErrors import UnknownElementError, NoExpression, TooManyDecimalsException, MissingParenthesisException, SyntaxException
 from CreateExpression import CreateExpression
 from ComputeExpression import EvaluateExpression
+from CalculationErrorException import CalculationErrorException
 
 class Interpreter:
     def __init__(self, equation:str) -> None:
@@ -12,9 +13,9 @@ class Interpreter:
         try:
 
             readchars = charReader(self.equation)
-            tokens = readchars.create_Tokens()
+            tokens = readchars.createTokens()
             mathEXP = CreateExpression(tokens)
-            tree = mathEXP.read_Tokens()
+            tree = mathEXP.readTokens()
             expression = EvaluateExpression(tree)
 
         except TooManyDecimalsException as T:
@@ -27,21 +28,23 @@ class Interpreter:
             return (False, str(S))
         except ZeroDivisionError:
             return (False, 'MATH ERROR: Divide by Zero')
+        except CalculationErrorException as C:
+            return (False, str(C))
         except NoExpression:
             pass
 
         return (True, 'No Error')
 
-    def evaluateEquation(self) -> tuple[float, bool, str]:
+    def evaluateEquation(self, isDeg:bool) -> tuple[float, bool, str]:
 
         try:
 
             readchars = charReader(self.equation)
-            tokens = readchars.create_Tokens()
-            mathEXP = CreateExpression(tokens)
-            tree = mathEXP.read_Tokens()
+            tokens = readchars.createTokens()
+            mathExp = CreateExpression(tokens)
+            tree = mathExp.readTokens()
             expression = EvaluateExpression(tree)
-            result = expression.get_Result()
+            result = expression.getResult(isDeg)
 
         except TooManyDecimalsException as T:
             return (None, False, str(T))
@@ -53,6 +56,8 @@ class Interpreter:
             return (None, False, str(S))
         except ZeroDivisionError:
             return (None, False, 'MATH ERROR: Divide by Zero')
+        except CalculationErrorException as C:
+            return (None, False, str(C))
         except NoExpression:
             pass
 
