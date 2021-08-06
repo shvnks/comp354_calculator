@@ -16,6 +16,7 @@ class FunctionLog(FunctionBase):
         '''
             Function used to calculate ln through Series Expansion.
             Where ln(x) = 2 * Sum_1^\infty{ (((x-1)/(x+1))^(2n-1)) / (2n-1) }
+            See: https://math.stackexchange.com/questions/977586/is-there-an-approximation-to-the-natural-log-function-at-large-values
         '''
 
         # Creating the sum variable
@@ -23,7 +24,8 @@ class FunctionLog(FunctionBase):
 
         # Loop until the end condition is met
         for n in range(1, self.MAX_TERMS):
-            add = FunctionExponent.FunctionExponent((x-1)/(x+1), (2*n-1)).calculateEquation() / (2*n-1)
+            y = (x-1)/(x+1)
+            add = FunctionExponent.FunctionExponent(y, (2*n-1)).calculateEquation() / (2*n-1)
             sum += add
 
         return 2 * sum
@@ -52,4 +54,4 @@ class FunctionLog(FunctionBase):
 
 
 if __name__ == '__main__':
-    print(FunctionLog(2, 4).calculateEquation())
+    print(FunctionLog(3, 4.7).calculateEquation())
