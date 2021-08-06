@@ -16,7 +16,7 @@ class FunctionStandardDeviation():
             self.mean += point
         self.mean /= len(self.values)
 
-    def standard_deviation(self):
+    def calculateEquation(self):
         '''Calculate standard deviation.'''
         # Gets average of data points in self.values
         self.getMean()
