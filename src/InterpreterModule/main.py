@@ -15,13 +15,17 @@ def main(argv):
             user_input = input('>>> ')
 
             readchars = charReader(user_input)
-            tokens = readchars.create_Tokens()
+            tokens = readchars.createTokens()
+
+            # print(list(tokens))
 
             mathEXP = CreateExpression(tokens)
-            tree = mathEXP.read_Tokens()
+            tree = mathEXP.readTokens()
+
+            print(tree)
 
             expression = EvaluateExpression(tree)
-            print(f"Result: {expression.get_Result()}")
+            print(f"Result: {expression.getResult()}")
 
         # List of Errors the interpreter can arrive at. Errors can be understood by their names, or their print statements
         except TooManyDecimalsException as T:
@@ -39,4 +43,9 @@ def main(argv):
 
 
 if __name__ == '__main__':
+    print('\u03c0')
+    print('\u221a')
+    print('\u03c3')
+    print('\u0393')
+    print('\u03c3[10,8,6]')
     main(sys.argv)

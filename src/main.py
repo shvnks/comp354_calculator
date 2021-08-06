@@ -218,8 +218,8 @@ class ArrayInputDialog(QDialog):
 
         # Create the buttons to interact with the dialog
         self.buttonBox = QDialogButtonBox(self)
-        self.okButton = self.buttonBox.__addButton('Ok', QDialogButtonBox.ButtonRole.AcceptRole)
-        self.cancelButton = self.buttonBox.__addButton('Cancel', QDialogButtonBox.ButtonRole.RejectRole)
+        self.okButton = self.buttonBox.addButton('Ok', QDialogButtonBox.ButtonRole.AcceptRole)
+        self.cancelButton = self.buttonBox.addButton('Cancel', QDialogButtonBox.ButtonRole.RejectRole)
 
         # Add the widgets to the dialog
         self.vBox = QVBoxLayout()
@@ -395,7 +395,7 @@ class MainWindow(QMainWindow):
         self.__addButton('cos(x)', 'cosButton', 'cos()', row, 1)
         self.__addButton('tan(x)', 'tanButton', 'tan()', row, 2)
         self.__addButton('x!', 'factButton', '!', row, 3, shortcut=QKeySequence('!'))
-        self.__addButton(u'\u221a', 'Button', 'sqrt()', row, 4)
+        self.__addButton(u'\u221a', 'sqrtButton', u'\u221a()', row, 4)
         row += 1
 
         # Row 5
@@ -557,7 +557,7 @@ class MainWindow(QMainWindow):
         arrayInput = ArrayInputDialog('Input values', 'Enter a list of numbers, separated by commas:', self)
         if arrayInput.exec():
             arrayInputValues = arrayInput.getValue().strip()
-            self.addTextToEquation(functionStr + '(' + arrayInputValues + ')')
+            self.addTextToEquation(functionStr + '([' + arrayInputValues + '])')
 
     def switchDegRad(self) -> None:
         '''
@@ -629,7 +629,7 @@ class MainWindow(QMainWindow):
       
     def compute(self) -> None:
         '''Function called to get the answer of the equation, displaying the errors if any'''
-        answer, valid, error = Interpreter(self.equationString).evaluateEquation()
+        answer, valid, error = Interpreter(self.equationString).evaluateEquation(self.isDegree)
         if valid:
             self.history.addEquation(self.equationString, str(answer))
             self.clearText()

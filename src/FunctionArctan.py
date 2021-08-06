@@ -1,13 +1,14 @@
 from FunctionBase import FunctionBase
 from CalculationErrorException import CalculationErrorException
 import FunctionArcsin
+import FunctionExponent
 
-class FunctionArccos(FunctionBase):
-    '''Class used to calculate the arccos function.'''
+class FunctionArctan(FunctionBase):
+    '''Class used to calculate the arctan function.'''
 
     def __init__(self, num: float) -> None:
         '''Constructor.'''
-        super(FunctionArccos, self).__init__()
+        super(FunctionArctan, self).__init__()
         self.num = num
     
     def calculateEquation(self, isDeg=False) -> float:
@@ -21,9 +22,10 @@ class FunctionArccos(FunctionBase):
         if(isDeg):
             num = self.degreeToRadian(num)
    
-        # To achieve Arccos(x) simply divide 2/pi - Arcsin(x)
-        result = (self.PI/2) - FunctionArcsin.FunctionArcsin(num).calculateEquation()
+        # To achieve Arctan(x) use arcsin: arctan(x) = arcsin(x/(sqrt(1+x^2)))
+        # Source: https://en.wikipedia.org/wiki/Inverse_trigonometric_functions
+        result = FunctionArcsin.FunctionArcsin( num / FunctionExponent.FunctionExponent(1+(num * num), 0.5).calculateEquation()).calculateEquation()
         return result
 
 if __name__ == '__main__':
-    print(FunctionArccos(0.5).calculateEquation())
+    print(FunctionArctan(0.5).calculateEquation())

@@ -1,8 +1,8 @@
 
 from CalculationErrorException import CalculationErrorException
 from FunctionBase import FunctionBase
-from FunctionFactorial import FunctionFactorial
-from FunctionLog import FunctionLog
+import FunctionFactorial
+import FunctionLog
 
 class FunctionExponent(FunctionBase):
     '''Class used to calculate the Exponent function.'''
@@ -12,7 +12,7 @@ class FunctionExponent(FunctionBase):
         self.x = x
         self.y = y
 
-    def __calculateIntExponent(self, x: int, y: int) -> float:
+    def __calculateIntExponent(self, x: float, y: int) -> float:
         '''
             Function used to calculate the exponents  using x and y, 
             such that x^y, and x and y are integers.
@@ -68,7 +68,7 @@ class FunctionExponent(FunctionBase):
 
             selfxabs = self.x
 
-            x = self.y * FunctionLog(self.e, self.x).calculateEquation()
+            x = self.y * FunctionLog.FunctionLog(self.e, self.x).calculateEquation()
             xabs = x
             if xabs < 0:
                 xabs = xabs * -1
@@ -76,10 +76,14 @@ class FunctionExponent(FunctionBase):
             # Taylor series
             sum = 0
             for i in range(1, self.MAX_TERMS):
-                sum = sum + ((self.__calculateIntExponent(x = xabs, y = (i - 1)))/(FunctionFactorial(i - 1).calculateEquation()))
+                sum = sum + ((self.__calculateIntExponent(x = xabs, y = (i - 1)))/(FunctionFactorial.FunctionFactorial(i - 1).calculateEquation()))
 
             # Invert it if the exponent was negative
             if x < 0:
                 sum = 1 / sum
 
             return sum
+
+
+if __name__ == '__main__':
+    print(FunctionExponent(0.5, 100).calculateEquation())
