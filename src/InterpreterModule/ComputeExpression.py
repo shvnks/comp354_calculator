@@ -66,7 +66,7 @@ class EvaluateExpression:
             mediate_result = FunctionFactorial.FunctionFactorial(EvaluateExpression(self.tree.Node).getResult()).calculateEquation()
 
         elif isinstance(self.tree, SquareRootNode):
-            mediate_result = EvaluateExpression(self.tree.Node).getResult()**0.5
+            mediate_result = FunctionExponent.FunctionExponent(EvaluateExpression(self.tree.Node).getResult(), 0.5).calculateEquation()
 
         # Evaluates a Trigonometry function, inverse trigonometric function or hyperbolic trigonometry funciton
         elif isinstance(self.tree, TrigNode):
