@@ -138,7 +138,6 @@ class CreateExpression:
                 list.append(argument)
 
             self.generator()  # Get past ]
-            print(list)
             return list
 
         # Case where user inputs a number like +#
