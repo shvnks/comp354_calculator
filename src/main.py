@@ -18,9 +18,37 @@ COLOR_LIGHT    = '#DDDDDD'
 COLOR_ACCENT   = '#10a1a1'
 COLOR_WRONG    = '#ff0000'
 
-def helpStr():
+def helpStr() -> str:
     '''Returns the string for help documentation'''
-    return 'Help String'
+
+    helpStr = '''<b>ETERNITY has the following functions and the proper syntax for each of them:</b><br>
+    <b>Numbers:</b> Numbers can be written as 0.123, .123, 123. And can be joined together with irrational constants like 𝛑 and e, 3𝛑, 3e. Euler’s number e does not have to be raised to an exponent. The default value for e is e^1.<br>
+    <b>Addition:</b> x+y. Simple addition operator. Requires two arguments, one on each side of the plus operator.<br>
+    <b>Subtraction:</b> x-y. Simple subtraction operator. Requires two arguments, one on each side of the minus operator.<br>
+    <b>Multiplication:</b> x*y. Requires two arguments, one on each side of the multiplication symbol. Parenthesis can extend an argument.<br>
+    <b>Division:</b> x/y. Requires two arguments, one on each side of the division symbol. Parentheses can extend an argument, but division takes one numerator and one denominator. <br>
+    <b>Trig:</b> (sin(x), arccos(x), tanh(x)). Every trigonometry function requires one argument. The arguments can be lengthy expressions with other functions.<br>
+    <b>Log:</b> logb(a).Calculates the logarithm of a base b to an argument a. Requires two arguments. Parentheses can be used for long expressions for the base or argument.<br>
+    <b>Exponent:</b> (x^y). Applies a base x to the power of exponent y. x is multiplied by itself y times. x and y can be decimal numbers. Parentheses can be used for both the base and the exponent.<br>
+    <b>Factorial:</b> (x)!. Returns the argument multiplied by each integer before it until 1. Argument must be an integer greater than or equal to 0. Factorial will take the number just before it. Can also use parentheses.<br>
+    <b>Standard Deviation:</b> σ([x]). Statistic to observe how spread out the data is. Requires a list. If no list is present, it will return 0. A syntactically correct list requires values separated by commas, inside square brackets ([]). An example of proper syntax: [6, 8, 10]. <br>
+    <b>Gamma:</b> Γ(x). Extension of the factorial function to complex numbers (Ex: 9 + 5i). Requires one argument. The gamma function will take the first number if no parenthesis are present. Parentheses can extend the length of the argument for the Gamma function.<br>
+    <b>MAD:</b> MAD([x]). Calculates how far on average each data point is from their mean. Requires a list. If no list is present, it will return 0. A syntactically correct list requires values separated by commas, inside square brackets ([]). An example of proper syntax: [6, 8, 10].<br>
+    <b>Square Root:</b>√(x). The square root finds the number at which when multiplied by itself gives you the inputted argument x. Requires one argument. Square Root will take the first number if no parentheses are present. Parentheses can extend the length of the square root.<br>
+    Parentheses are another very important operator. They act like multiplication when there are two sets of parentheses side by side.They also help guide the order of operations and keep them succinct. <br>
+    When in doubt, use parentheses!'''
+
+    return helpStr
+
+def aboutStr() -> str:
+    '''Returns the string for the About page.'''
+    aboutStr = '''Welcome to the ETERNITY calculator!<br>
+    This calculator was programmed for those scientific enthusiasts and simple minded people alike. We were looking to bring users requiring difficult math functions as well as users needing only simple operations.<br>
+    The ETERNITY calculator provides the ability to swap between a light theme and a dark theme, and offers the choice between degrees or radians for trigonometry functions. The functions are very intuitive if you have seen them before, if not there is a help page which provides descriptions of every single button with their proper syntax.<br>
+    This calculator was made for class COMP-354 at concordia, with the collaboration of the following students: Danny Roux-Dufault, Nicholas Simo, Arash Singh, Vatsa Kartik Shah, William Robinson, Tyler Shanks, and Andrei Serban.<br>
+    Enjoy!
+    '''
+    return aboutStr
 
 class CustomListViewItem(QWidget):
     '''Custom List View Item widget to display one equation, its result, and '''
@@ -489,20 +517,32 @@ class MainWindow(QMainWindow):
       
     def __onAboutActionTriggered(self) -> None:
         '''Action when the menu->about is clicked.'''
+
         # Create a message box with the about information
+        tmpFont = self.app.font()
+        tmpFont.setPixelSize(12)
+
         msb = QMessageBox(self)
         msb.setWindowTitle('About')
-        msb.setText('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sollicitudin dui pulvinar ante rutrum pretium et non dolor. Quisque pretium sodales nulla, non dapibus magna mollis quis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Maecenas id sodales felis. Mauris nec finibus orci, et vehicula sapien. Cras id nibh mauris. Praesent nec ante vel diam molestie dictum ut in augue. Suspendisse consectetur lacus non odio faucibus tempus. Proin quis eros sodales, condimentum leo non, blandit turpis. Nullam suscipit semper malesuada. Donec massa orci, fermentum ac dignissim sit amet, iaculis sed magna. Nulla ullamcorper efficitur dui, sit amet consequat ligula.')
+        msb.setText(aboutStr())
+        msb.setFont(tmpFont)
         msb.setStandardButtons(QMessageBox.Ok)
         msb.exec_()
         
     def __onHelpActionTriggered(self) -> None:
         '''Action when the menu->help is clicked.'''
+        
         # Create a message box with the help information
+        tmpFont = self.app.font()
+        tmpFont.setPixelSize(12)
+
         msb = QMessageBox(self)
         msb.setWindowTitle('Help')
         msb.setText(helpStr())
+        msb.setFont(tmpFont)
+        msb.setFixedWidth(1000)
         msb.setStandardButtons(QMessageBox.Ok)
+        
         msb.exec_()
         
     def __onLightStyleActionTriggered(self) -> None:
@@ -546,7 +586,7 @@ class MainWindow(QMainWindow):
         self.cursorPosition += len(functionStr)
         
         # If the parameter is a function, sets the cursor to inside the parenthesis
-        if len(functionStr) > 1 and functionStr[-1] == ')':
+        if len(functionStr) > 1 and functionStr[-1] == ')' and functionStr[-2] != ']':
             self.cursorPosition -= 1
         
         # Update the equation shown
