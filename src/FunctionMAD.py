@@ -17,19 +17,17 @@ class FunctionMAD(FunctionBase):
         '''
         # Calculate the mean of inputs
         mean = 0
-        for i in range(0, len(self.arguments)):
-            mean += self.arguments[i]
+        for i in self.arguments:
+            mean += i
         mean = mean/len(self.arguments)
 
         deviation = 0
-        summ = 0
 
         # Calculate deviation
-        for i in range(0, len(self.arguments)):
-            deviation = self.arguments[i]-mean
-        if deviation < 0:
-            deviation = -deviation
+        for i in self.arguments:
+            sum = i - mean
+            if sum < 0:
+                sum = -sum
+            deviation += sum
 
-        summ += deviation
-
-        return summ / len(self.arguments)
+        return deviation / len(self.arguments)
