@@ -1,5 +1,5 @@
 """Reads math expression one character at a time."""
-from InterpreterErrors import UnknownElementError, TooManyDecimalsException, SyntaxException
+from InterpreterErrors import UnknownElementError, TooManyDecimalsException
 from Tokens import Token, TokenType
 
 

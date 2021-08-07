@@ -1,8 +1,10 @@
 """Take individual tokens, and make the math expression."""
 from Tokens import TokenType
-from Nodes import *
+from Nodes import NumberNode, AddNode, MinusNode, PositiveNode, NegativeNode, MultiplyNode, DivideNode, PowerNode, FactorialNode, TrigNode, LogNode, SquareRootNode, GammaNode, StandardDeviationNode, MADNode
 from InterpreterErrors import NoExpression, MissingParenthesisException, SyntaxException
 
+
+# 5cos0^3
 class CreateExpression:
     """Create Expression => knowing what the expression is asking."""
 
@@ -50,11 +52,11 @@ class CreateExpression:
         """Acquire Higher Precedence Values (Multiplication == Division)."""
         mediate_result = self.evaluateHighestPrecedence()
 
-        while self.current_token is not None and self.current_token.type in (TokenType.MULTIPLICATION, TokenType.NUMBER, TokenType.LEFTP, TokenType.DIVISION, TokenType.TRIG, TokenType.LOGARITHMIC, TokenType.SQUAREROOT, TokenType.GAMMA, TokenType.STANDARDDEVIATION, TokenType.MAD):
+        while self.current_token is not None and self.current_token.type in (TokenType.MULTIPLICATION, TokenType.LEFTP, TokenType.DIVISION, TokenType.TRIG, TokenType.LOGARITHMIC, TokenType.SQUAREROOT, TokenType.GAMMA, TokenType.STANDARDDEVIATION, TokenType.MAD):
             if self.current_token.type == TokenType.MULTIPLICATION:
                 self.generator()
                 mediate_result = MultiplyNode(mediate_result, self.evaluateHighestPrecedence(True))
-            elif self.current_token.type is TokenType.LEFTP or self.current_token.type is TokenType.NUMBER:
+            elif self.current_token.type is TokenType.LEFTP:
                 mediate_result = MultiplyNode(mediate_result, self.evaluateHighestPrecedence(True))
             elif self.current_token.type == TokenType.DIVISION:
                 self.generator()
@@ -138,6 +140,7 @@ class CreateExpression:
                 list.append(argument)
 
             self.generator()  # Get past ]
+            print(list)
             return list
 
         # Case where user inputs a number like +#
