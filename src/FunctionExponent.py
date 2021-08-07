@@ -49,10 +49,10 @@ class FunctionExponent(FunctionBase):
         '''
 
         if self.x == 0 and self.y < 0:
-            raise CalculationErrorException('Invalid Input: Base of 0 cannot be raise to a negative value')
+            raise CalculationErrorException('Invalid Input: Base of 0 cannot be raised to a negative value')
 
         if self.x < 0 and self.y < 0 and not isinstance(self.y, int):
-            raise CalculationErrorException('Invalid Input: Negative Base exponent cannot be raised to negative decimals')
+            raise CalculationErrorException('Invalid Input: Negative base exponent cannot be raised to negative decimals')
 
         # Don't need to do the Taylor Expansion of it meets any of those requirements
         if self.y == 0 or self.x == 0 or isinstance(self.y, int):
