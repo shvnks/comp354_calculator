@@ -25,7 +25,7 @@ class FunctionTanh(FunctionBase):
         # Calculate tanh(x) using sinh(x)/cosh(x), where x is self.num
         # https://www.whitman.edu/mathematics/calculus_online/section04.11.html
         num1 = FunctionSinh.FunctionSinh(num).calculateEquation()
-        num2 = FunctionCosh.FunctionCosh(-num).calculateEquation()
+        num2 = FunctionCosh.FunctionCosh(num).calculateEquation()
         result = num1/num2
                
         return result
