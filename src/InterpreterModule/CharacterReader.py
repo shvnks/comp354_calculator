@@ -41,7 +41,7 @@ class charReader:
             elif self.char in 'ascltMσΓ':
                 yield self.generateFunction()
 
-            elif self.char in '\u03c0':
+            elif self.char in '\U0001D745':
                 self.generator()
                 yield Token(TokenType.PI, float(3.1415926535897932384626433))
 
