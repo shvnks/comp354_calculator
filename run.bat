@@ -1,4 +1,7 @@
 @echo off
 
 set PYTHONPATH=%PYTHONPATH%;%~dp0\src\InterpreterModule;%~dp0\src
-"python.exe" "%~dp0\src\main.py"
+
+pushd "%~dp0\src"
+"python.exe" "main.py"
+popd
