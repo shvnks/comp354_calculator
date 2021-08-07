@@ -160,15 +160,17 @@ class CreateExpression:
         elif token.type is TokenType.LOGARITHMIC:
             return LogNode(self.acquireNumber(True), self.acquireNumber(True))
 
+        # Case for Mean Absolute Deviation
         elif token.type is TokenType.MAD:
-            return MADNode(self.acquireNumber())
+            return MADNode(self.acquireNumber(True))
 
+        # Case for Gamma Function
         elif token.type is TokenType.GAMMA:
             return GammaNode(self.evaluateHighestPrecedence(True))
 
         # Case for standard deviation
         elif token.type is TokenType.STANDARDDEVIATION:
-            return StandardDeviationNode(self.acquireNumber())
+            return StandardDeviationNode(self.acquireNumber(True))
 
         # Special factorial case, since the number appears before the operator
         elif self.current_token is not None and token.type is TokenType.FACTORIAL:
