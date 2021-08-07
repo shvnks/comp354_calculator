@@ -1,7 +1,7 @@
 from FunctionBase import FunctionBase
 from CalculationErrorException import CalculationErrorException
-from FunctionSinh import FunctionSinh
-from FunctionCosh import FunctionCosh
+import FunctionSinh
+import FunctionCosh
 
 class FunctionTanh(FunctionBase):
     '''Class used to calculate the Cosh function.'''
@@ -18,13 +18,14 @@ class FunctionTanh(FunctionBase):
         '''
 
         # If the number is in degrees, convert it to radians
+        num = self.num
         if(isDeg):
-            self.num = self.degreeToRadian(self.num)
+            num = self.degreeToRadian(num)
             
         # Calculate tanh(x) using sinh(x)/cosh(x), where x is self.num
         # https://www.whitman.edu/mathematics/calculus_online/section04.11.html
-        num1 = FunctionSinh(self.num).calculateEquation()
-        num2 = FunctionCosh(-self.num).calculateEquation()
+        num1 = FunctionSinh.FunctionSinh(num).calculateEquation()
+        num2 = FunctionCosh.FunctionCosh(num).calculateEquation()
         result = num1/num2
                
         return result

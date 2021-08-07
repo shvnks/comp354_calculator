@@ -1,8 +1,7 @@
 """Take individual tokens, and make the math expression."""
 from Tokens import TokenType
-from Nodes import NumberNode, AddNode, MinusNode, PositiveNode, NegativeNode, MultiplyNode, DivideNode, PowerNode, FactorialNode, TrigNode, LogNode, SquareRootNode, GammaNode, StandardDeviationNode, MADNode
+from Nodes import *
 from InterpreterErrors import NoExpression, MissingParenthesisException, SyntaxException
-
 
 class CreateExpression:
     """Create Expression => knowing what the expression is asking."""
@@ -139,7 +138,6 @@ class CreateExpression:
                 list.append(argument)
 
             self.generator()  # Get past ]
-            print(list)
             return list
 
         # Case where user inputs a number like +#
@@ -162,11 +160,9 @@ class CreateExpression:
         elif token.type is TokenType.LOGARITHMIC:
             return LogNode(self.acquireNumber(True), self.acquireNumber(True))
 
-        # Case for MAD Function
         elif token.type is TokenType.MAD:
             return MADNode(self.acquireNumber())
 
-        # Case for Gamma Function
         elif token.type is TokenType.GAMMA:
             return GammaNode(self.evaluateHighestPrecedence(True))
 

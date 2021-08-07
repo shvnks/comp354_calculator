@@ -1,14 +1,13 @@
 from FunctionBase import FunctionBase
-from FunctionExponent import FunctionExponent
 from CalculationErrorException import CalculationErrorException
 
 
-class FunctionMad(FunctionBase):
+class FunctionMAD(FunctionBase):
     '''Class used to calculate the Mean Average Deviation function.'''
 
     def __init__(self, arguments: list) -> None:
         '''Constructor.'''
-        super(FunctionMad, self).__init__()
+        super(FunctionMAD, self).__init__()
         self.arguments = arguments
 
     def calculateEquation(self) -> float:

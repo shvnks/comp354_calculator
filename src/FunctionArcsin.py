@@ -1,47 +1,47 @@
-
-
 from FunctionBase import FunctionBase
 from CalculationErrorException import CalculationErrorException
-import math
+import FunctionExponent
 
-# FunctionArcsin: Class use to define and calculate Arcsin(x)
-class FunctionAcrsin(FunctionBase):
+class FunctionArcsin(FunctionBase):
+    '''Class used to calculate the arcsin function.'''    
     
-    #constructor
     def __init__(self, num: float) -> None:
+        '''Constructor.'''
         super(FunctionArcsin, self).__init__()
         self.num = num
 
-    # calculate Arcsin
-    # input: num (int), isDeg (boolean)
-    # output: Arcsin(num)
     def calculateEquation(self, isDeg=False) -> float:
-    
-        #if the number is in degrees, convert it to radians
-        if(isDeg):
-            self.num = self.num * self.PI/180
-    
-        
-        # sum1 variable is the sum of the series.
-        sum1 = 0
+        '''
+            Function used to calculate arccos using Taylor Series.
+            Returns arcsin(self.num)
+        '''
 
-	    # Current for loop to create the length of the series.
-	    # Note that the range is set to 130 since anything greater can cause an overflow for different IDEs. 
-        for n in range(0, MAX_TERMS(FunctionBase).calculateEquation()):
+        # If the number is in degrees, convert it to radians
+        num = self.num
+        if(isDeg):
+            num = self.degreeToRadian(num)
+    
+        sum = 0
+
+	    # Taylor Series calculation.
+        for n in range(0, self.MAX_TERMS):
 
             # Formula of the Talor series in terms of the integration for arcsin
-            x1 = (self.num ** (2 * n + 1)) / (2 * n + 1) / float(2 ** (2 * n))
+            x1 = FunctionExponent.FunctionExponent(num, (2 * n + 1)).calculateEquation() / (2 * n + 1) / float(2 ** (2 * n))
             x2 = float(1)        
-        
         
             #top numerator of the integration 
             for i in range(n + 1, 2 * n + 1):
                 x2 *= i
+
             #Divided by the bottom denominator of the intergration. 
             for i in range(2, n + 1):
                 x2 /= i
 
 	        #The addition to the next series with the multiplication of the intergration.
-            sum1 += x1 * x2
+            sum += x1 * x2
 
-        return sum1
+        return sum
+
+if __name__ == '__main__':
+    print(FunctionArcsin(0.5).calculateEquation())
