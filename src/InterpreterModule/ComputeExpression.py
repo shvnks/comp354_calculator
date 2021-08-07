@@ -1,19 +1,5 @@
 """Give the answer to the tree."""
 import math
-import sys
-sys.path.insert(0, 'C:\\Users\\Nicholas\\Desktop\\COMP354\\comp354_calculator\\src')
-from FunctionStandardDeviation import FunctionStandardDeviation
-from FunctionGamma import FunctionGamma
-from FunctionMAD import FunctionMAD
-from FunctionLog import FunctionLog
-from FunctionArccos import FunctionArccos
-from FunctionArcsin import FunctionArcsin
-from FunctionSinh import FunctionSinh
-from FunctionTanh import FunctionTanh
-from FunctionCosh import FunctionCosh
-from FunctionExponent import FunctionExponent
-from FunctionFactorial import FunctionFactorial
-
 from Nodes import *
 
 import FunctionFactorial
@@ -27,7 +13,6 @@ import FunctionArccos
 import FunctionArcsin
 import FunctionArctan
 import FunctionStandardDeviation
-import FunctionGamma
 import FunctionMAD
 
 

@@ -1,5 +1,5 @@
 """Reads math expression one character at a time."""
-from InterpreterErrors import UnknownElementError, TooManyDecimalsException, SyntaxException
+from InterpreterErrors import UnknownElementError, TooManyDecimalsException
 from Tokens import Token, TokenType
 
 
@@ -41,11 +41,7 @@ class charReader:
             elif self.char in 'ascltMσΓ':
                 yield self.generateFunction()
 
-<<<<<<< HEAD
-            elif self.char in '\u03c0':
-=======
             elif self.char in '\U0001D745':
->>>>>>> 7934e8bd1ca63632e704871a9ba8f074ad79e04a
                 self.generator()
                 yield Token(TokenType.PI, float(3.1415926535897932384626433))
 

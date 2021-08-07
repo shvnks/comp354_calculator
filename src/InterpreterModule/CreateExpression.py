@@ -50,11 +50,11 @@ class CreateExpression:
         """Acquire Higher Precedence Values (Multiplication == Division)."""
         mediate_result = self.evaluateHighestPrecedence()
 
-        while self.current_token is not None and self.current_token.type in (TokenType.MULTIPLICATION, TokenType.LEFTP, TokenType.DIVISION, TokenType.TRIG, TokenType.LOGARITHMIC, TokenType.SQUAREROOT, TokenType.GAMMA, TokenType.STANDARDDEVIATION, TokenType.MAD):
+        while self.current_token is not None and self.current_token.type in (TokenType.MULTIPLICATION, TokenType.NUMBER, TokenType.LEFTP, TokenType.DIVISION, TokenType.TRIG, TokenType.LOGARITHMIC, TokenType.SQUAREROOT, TokenType.GAMMA, TokenType.STANDARDDEVIATION, TokenType.MAD):
             if self.current_token.type == TokenType.MULTIPLICATION:
                 self.generator()
                 mediate_result = MultiplyNode(mediate_result, self.evaluateHighestPrecedence(True))
-            elif self.current_token.type is TokenType.LEFTP:
+            elif self.current_token.type is TokenType.LEFTP or self.current_token.type is TokenType.NUMBER:
                 mediate_result = MultiplyNode(mediate_result, self.evaluateHighestPrecedence(True))
             elif self.current_token.type == TokenType.DIVISION:
                 self.generator()
