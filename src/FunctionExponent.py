@@ -24,23 +24,22 @@ class FunctionExponent(FunctionBase):
             return 1
 
         # 0^x = 0
-        elif x == 0:
+        if x == 0:
             return 0
 
         # x^y where y is an integer
-        else:
-            result = x
-            yabs = y
-            if yabs < 0:
-                yabs = yabs * -1
+        result = x
+        yabs = y
+        if yabs < 0:
+            yabs = yabs * -1
 
-            for i in range(1, yabs):
-                result = result * x
+        for i in range(1, yabs):
+            result = result * x
 
-            # if y was negative, then invert it, since x^(-y) = 1/(x^y)
-            if y < 0:
-                result = 1 / result
-            return result
+        # if y was negative, then invert it, since x^(-y) = 1/(x^y)
+        if y < 0:
+            result = 1 / result
+        return result
 
     def calculateEquation(self) -> float:
         '''
@@ -51,12 +50,12 @@ class FunctionExponent(FunctionBase):
         if self.x == 0 and self.y < 0:
             raise CalculationErrorException('Invalid Input: Base of 0 cannot be raised to a negative value')
 
-        if self.x < 0 and self.y < 0 and not isinstance(self.y, int):
+        if self.x < 0 and self.y < 0 and int(self.y) != self.y:
             raise CalculationErrorException('Invalid Input: Negative base exponent cannot be raised to negative decimals')
 
         # Don't need to do the Taylor Expansion of it meets any of those requirements
-        if self.y == 0 or self.x == 0 or isinstance(self.y, int):
-            return self.__calculateIntExponent(x = self.x, y = self.y)
+        if self.y == 0 or self.x == 0 or int(self.y) == self.y:
+            return self.__calculateIntExponent(x = self.x, y = int(self.y))
         else:
 
             # Any exponent can be calculated this way: a^b = e^(b*ln(a))
@@ -66,23 +65,21 @@ class FunctionExponent(FunctionBase):
             # https://math.stackexchange.com/a/21386/766151
             # https://math.stackexchange.com/questions/1124242/how-to-calculate-exp-x-using-taylor-series
 
-            selfxabs = self.x
-
-            x = self.y * FunctionLog.FunctionLog(self.e, self.x).calculateEquation()
-            xabs = x
-            if xabs < 0:
-                xabs = xabs * -1
+            a = self.y * FunctionLog.FunctionLog(self.e, self.x).calculateEquation()
+            aabs = a
+            if aabs < 0:
+                aabs = aabs * -1
 
             # Taylor series
             sum = 0
             for i in range(1, self.MAX_TERMS):
-                sum = sum + ((self.__calculateIntExponent(x = xabs, y = (i - 1)))/(FunctionFactorial.FunctionFactorial(i - 1).calculateEquation()))
+                sum = sum + ((self.__calculateIntExponent(x = aabs, y = (i - 1)))/(FunctionFactorial.FunctionFactorial(i - 1).calculateEquation()))
 
             # Invert it if the exponent was negative
-            if x < 0:
+            if a < 0:
                 sum = 1 / sum
 
-            return sum
+            return self.truncate(sum, self.ROUNDING)
 
 
 if __name__ == '__main__':
