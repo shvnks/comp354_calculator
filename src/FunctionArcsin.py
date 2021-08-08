@@ -1,6 +1,7 @@
 from FunctionBase import FunctionBase
 from CalculationErrorException import CalculationErrorException
 import FunctionExponent
+import FunctionFactorial
 
 class FunctionArcsin(FunctionBase):
     '''Class used to calculate the arcsin function.'''    
@@ -9,6 +10,12 @@ class FunctionArcsin(FunctionBase):
         '''Constructor.'''
         super(FunctionArcsin, self).__init__()
         self.num = num
+
+    def __exp(self, x: float, y: float) -> float:
+        return FunctionExponent.FunctionExponent(x, y).calculateEquation()
+
+    def __fac(self, x: int) -> int:
+        return FunctionFactorial.FunctionFactorial(x).calculateEquation()
 
     def calculateEquation(self, isDeg=False) -> float:
         '''
@@ -26,22 +33,15 @@ class FunctionArcsin(FunctionBase):
 	    # Taylor Series calculation.
         for n in range(0, self.MAX_TERMS):
 
-            # Formula of the Talor series in terms of the integration for arcsin
-            x1 = FunctionExponent.FunctionExponent(num, (2 * n + 1)).calculateEquation() / (2 * n + 1) / float(2 ** (2 * n))
-            x2 = float(1)        
-        
-            #top numerator of the integration 
-            for i in range(n + 1, 2 * n + 1):
-                x2 *= i
+            a1 = 1 / self.__exp(2, 2*n)
 
-            #Divided by the bottom denominator of the intergration. 
-            for i in range(2, n + 1):
-                x2 /= i
+            a2 = self.__fac(2 * n) / (self.__fac(n) * self.__fac(n))
 
-	        #The addition to the next series with the multiplication of the intergration.
-            sum += x1 * x2
+            a3 = self.__exp(num, (2 * n) + 1) / ((2 * n) + 1)
 
-        return sum
+            sum = sum + (a1 * a2 * a3)
+
+        return self.truncate(sum, self.ROUNDING-3)
 
 if __name__ == '__main__':
     print(FunctionArcsin(0.5).calculateEquation())
