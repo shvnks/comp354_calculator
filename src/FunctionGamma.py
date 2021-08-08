@@ -1,7 +1,8 @@
 from FunctionBase import FunctionBase
-from FunctionExponent import FunctionExponent
-from FunctionSinh import FunctionSinh
+import FunctionExponent
 from CalculationErrorException import CalculationErrorException
+
+import math
 
 lanczos_coef = [
     0.99999999999980993,
@@ -22,24 +23,26 @@ class FunctionGamma(FunctionBase):
         '''Constructor.'''
         super(FunctionGamma, self).__init__()
         self.num = num
-
+        self.EPSILON = 1e-07
+        
     def calculateEquation(self) -> float:
         '''
             Function used to calculate the gamma function.
             Returns Gamma(self.num)
         '''
-        if self.num < 0.5:
-            return (self.PI / (FunctionSinh(self.PI * self.num).calculateEquation() * FunctionGamma(1 - self.num).calculateEquation()))
+        num = self.num
+        if num < 0.5:
+            return (self.PI / (math.sin(self.PI * num) * FunctionGamma(1 - num).calculateEquation()))
         else:
-            self.num -= 1
+            num -= 1
             x = lanczos_coef[0]
-
-            for i in range(1, 9):
-                x += lanczos_coef[i] / (self.num + i)
-
-            t = self.num + len(lanczos_coef) - 1.5
-
-            return (FunctionExponent(2 * self.PI, 0.5).calculateEquation() * FunctionExponent(t, self.num + 0.5).calculateEquation() * FunctionExponent(self.e, -t).calculateEquation() * x)
+            for i in range(1, len(lanczos_coef)):
+                x += lanczos_coef[i] / (num + i)
+            t = num + len(lanczos_coef) - 1.5
+            y = FunctionExponent.FunctionExponent(2 * self.PI, 0.5).calculateEquation() * \
+                    FunctionExponent.FunctionExponent(t, (num + 0.5)).calculateEquation() * \
+                    FunctionExponent.FunctionExponent(self.e, -t).calculateEquation() * x
+            return self.truncate(y, self.ROUNDING)
 
 
 # Test Code
