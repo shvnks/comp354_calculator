@@ -30,4 +30,4 @@ class FunctionMAD(FunctionBase):
                 sum = -sum
             deviation += sum
 
-        return deviation / len(self.arguments)
+        return self.truncate(deviation / len(self.arguments), self.ROUNDING)

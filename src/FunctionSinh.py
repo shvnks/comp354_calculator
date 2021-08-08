@@ -33,4 +33,4 @@ class FunctionSinh(FunctionBase):
         elif(result < self.MIN_RESULT):
             raise CalculationErrorException("MATH ERROR: Result too small")      
           
-        return result
+        return self.truncate(result, self.ROUNDING)

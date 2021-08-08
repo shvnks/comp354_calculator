@@ -23,7 +23,7 @@ class FunctionArccos(FunctionBase):
    
         # To achieve Arccos(x) simply divide 2/pi - Arcsin(x)
         result = (self.PI/2) - FunctionArcsin.FunctionArcsin(num).calculateEquation()
-        return result
+        return self.truncate(result, self.ROUNDING-3)
 
 if __name__ == '__main__':
     print(FunctionArccos(0.5).calculateEquation())

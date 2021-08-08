@@ -25,7 +25,8 @@ class FunctionArctan(FunctionBase):
         # To achieve Arctan(x) use arcsin: arctan(x) = arcsin(x/(sqrt(1+x^2)))
         # Source: https://en.wikipedia.org/wiki/Inverse_trigonometric_functions
         result = FunctionArcsin.FunctionArcsin( num / FunctionExponent.FunctionExponent(1+(num * num), 0.5).calculateEquation()).calculateEquation()
-        return result
+        
+        return self.truncate(result, self.ROUNDING)
 
 if __name__ == '__main__':
     print(FunctionArctan(0.5).calculateEquation())

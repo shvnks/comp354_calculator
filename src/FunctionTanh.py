@@ -28,4 +28,4 @@ class FunctionTanh(FunctionBase):
         num2 = FunctionCosh.FunctionCosh(num).calculateEquation()
         result = num1/num2
                
-        return result
+        return self.truncate(result, self.ROUNDING)

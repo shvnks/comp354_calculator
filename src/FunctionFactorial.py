@@ -20,14 +20,14 @@ class FunctionFactorial(FunctionBase):
             raise CalculationErrorException('Invalid Input: Factorial input cannot be negative.')
 
         # 0! = 1
-        elif self.x == 0:
+        if self.x == 0:
             return 1
 
         # Calculate x!
-        else:
-            result = self.x
-            i = result - 1
-            while i > 0:
-                result = result * i
-                i = i - 1
-            return result
+        result = self.x
+        i = result - 1
+        while i > 0:
+            result = result * i
+            i = i - 1
+
+        return result

@@ -24,4 +24,4 @@ class FunctionAbs(FunctionBase):
         if result < self.MIN_RESULT:
             raise CalculationErrorException('MATH ERROR: Result too low')
 
-        return result
+        return self.truncate(result, self.ROUNDING)
