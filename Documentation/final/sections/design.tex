@@ -1,0 +1,120 @@
+\section{Design}
+    \subsection{Algorithms}
+        \begin{enumerate}
+            \item $\begin{aligned}[t]
+                arccos(x)
+            \end{aligned}$
+                \paragraph
+                The Arccos function also known as the inverse of cos can be expressed in many forms, though the formula that we will be using is as follows:
+        \end{enumerate}
+
+    \subsubsection{Interpreter Algorithm}
+        \paragraph{}
+        The Interpreter parsed the equation inputted by the user, and calculated the result. Addition, subtraction, multiplication, division, factorial, exponent, square root,  logarithms, trigonometry, hyperbolic trigonometry, gamma, standard deviation and mean absolute deviation were functions successfully able to be applied in equations.
+
+        \paragraph{}
+        The Interpreter Algorithm is located in the InterpreterModule Folder in src. This folder contains 7 python files which all played a pivotal role with the Interpreter. These files were:
+
+        \begin{enumerate}
+            \item CharacterReader.py
+            \item Tokens.py
+            \item Nodes.py
+            \item CreateExpression.py
+            \item InterpreterErrors.py
+            \item ComputeExpression.py
+            \item Interpreter.py
+        \end{enumerate}
+
+        \paragraph{}
+        And will be elucidated in this order. For a full detailed algorithm with comments and specifics, please open all the python files mentioned above.
+
+        \begin{enumerate}
+            \item CharacterReader.py
+            \paragraph{}
+            CharacterReader.py was the first of three crucial files. It was the first in the interpreter pipeline. The Interpreter algorithm begins by reading the user-inputted math expression character by character using a python generator.
+
+            \paragraph{}
+            This part of the pipeline would assign a token type to each character in the expression. These token Types can be seen in Tokens.py. If the characterReader confronted a letter in a function, (Example: a for arccos), the characterReader figured out exactly the function placed by the user and generated that function Token. If the characterReader confronted a number, the characterReader would assure that the number was inputted correctly. A Number is correctly inputted if it did not contain two decimal periods. A NUMBER Token was then generated. The characterReader would do the same for the operators encountered. Lastly, if a character was not a character that is a math expression, the characterReader would reject the math expression and raise an error.
+
+            \item Tokens.py
+            \paragraph{}
+            Tokens.py contains an Enumeration class called TokenType. TokenType enumerated every possible type of token that the interpreter could read by associating to it an ID. (Examples of tokens were operators: [PLUS (+), MULTIPLICATION (*)], functions: [TRIG, SQUAREROOT], and left parentheses, right parentheses, left bracket, right bracket were considered separate tokens.)
+
+            \paragraph{}
+            This allowed tokens to have specific ID’s for easy comparison in CreateExpression.py. Tokens.py also contains the Token class, which uses the attributes Token and type. The attribute Token keeps track of the token ID and the type containing the operator or number, depending on the token. This was mostly used for debugging purposes.
+
+
+            \item Nodes.py
+            \paragraph{}
+            Nodes.py contained the classes for every possible node. There were nodes for the operators, numbers and the functions. These nodes were to hold Number Nodes, as every mathematical operation and function need numbers, or any combination of them. These nodes would be included in the mathematical expression tree that was to be evaluated. Operator Nodes, like +, -, *, / and \^ needed two values, one on each side of the operator, while functions like Gamma, only needed one value. Values were considered as just any number, or any expression in parenthesis. Soon enough, as the complexity of the math expression increased, the tree of nodes complexified into a recursive set of nodes.
+
+            \item CreateExpression.py
+            \paragraph{}
+            CreateExpression.py was the second of three crucial files. This part of the pipeline was in charge of creating the tree of the mathematical expression by following the order of operations.
+
+            \paragraph{}
+            This part of the pipeline was recursive in nature. In mathematics the order of operations are the lowest order:  plus (+), minus (-), higher order: multiplication (*), division (/), and highest order: power (\^). The first priority in creating the expression is looking for the numbers, and then the operators. If the algorithm comes into contact with any of the function tokens, in reality, the function of a number returns a number, indicating that a mathematical expression is just numbers combined with operators.
+
+            \paragraph{}
+            The algorithm would run through the generator supplying the tokens that were created with characterReader.py. The algorithm would be always keeping track of the previous token, as well as the current one.  When a number or function is found, the algorithm would check for the next token, making a recursive call to find an operator. If the next token was an operator, the algorithm would keep track of the first number encountered, and find the next inner number or inner expression in brackets. The highest order operator, power, would be concise, as it is the highest order. Meanwhile, the lowest order operations like plus and minus would be looked at last.
+
+            \paragraph{}
+            An example of a math expression would be $5+4*2+3$. This is a simple one, as no complex functions are included and parenthesis are not present. The algorithm would read the number token, 5. Then it checks for a power operator, then a multiplication/division operator. It can not find any of those, but it finds the plus operator. The algorithm creates a Node for the plus operator. The plus operator then has 5 as its first leftmost value, and is on the journey to find the rightmost value. So it calls to check for a higher order operator, as they take more precedence, as $5 + 4*2$, has to be evaluated as $(5 + (4*2))$ and not $(5+4)*2$. In this case, the algorithm does find a number token, 4, followed by a multiplication token. The number token 4 becomes the first value in the multiplication node, and the algorithm must now look for the highest priority operator, which is power. The algorithm does not find a power node, and so the number token 2 is returned as the rightmost value in the multiplication node, and the last plus operator is created with the leftmost value as $(5+(4*2))$ and the rightmost value as 3. The resulting tree is therefore $((5+(4*2)) + 3)$. This algorithm then passes this tree to computeExpression.py
+
+            \item InterpreterErrors.py
+            \paragraph{}
+            InterpreterErrors.py contained all the possible errors in the three pipeline files. The error classes present in this file were for unknown elements, no expression, too many decimals, missing parenthesis and for syntax errors.
+
+            \begin{enumerate}
+                \item The Unknown Element error was raised if there was a character that was not intended for in the math expression.
+                \item No Expression Error was raised if the user did not enter a valid math equation
+                \item Too many decimals error was used for when generating the NUMBER token. If the characterReader found two or more decimals in a number, this error would be raised.
+                \item Missing parenthesis error would be raised for a mismatching number of parenthesis
+                \item Syntax Errors were any other errors that were not caught by the interpreter or for security for not crashing the ETERNITY calculator
+            \end{enumerate}
+
+            \item ComputeExpression.py
+            \paragraph{}
+            ComputeExpression.py was the third of three crucial files in the interpreter pipeline. This python file returned the result of the mathematical expression tree created from CreateExpression.py.
+
+            \paragraph{}
+            The basis of this algorithm was to take different paths whether the node in the tree was one of  plus node, minus node, multiplication node, division node, power node or any other. Thi is simply those operations were in charge of the order of operations and so the algorithm had to consistently check whether the second value in each of those nodes was of higher priority than itself. The algorithm would follow a depth-first search model looking through the second values until the highest priority was found, or the tree reached a leaf node. Once arrived at a leaf node, the algorithm would check the type of node it was, and compute that value. Once that value was computed it would be recursively passed into the previous function call, and used to calculate the higher nodes until only the result was left.
+
+            \paragraph{}
+            Function Nodes needed only a number value, and so if the function contained an expression in parenthesis, the algorithm would pursue the parenthesis as another expression, and calculate that one before accepting it as the function’s value.
+
+            \item Interpreter.py
+            \paragraph{}
+            This python file wrapped the entire pipeline together, surrounded with a try except statement to catch the errors that could be raised. The Interpreter would begin by reading the characters in the expression, creating the tokens as it moved along. Once the list of tokens were created, the pipeline took that list, and created the proper mathematical expression tree following order of operations, until it finally calculated the result of the mathematical expression by pursuing the tree through depth first search.
+        \end{enumerate}
+
+    \subsection{UI Design}
+    \paragraph{}
+    The goal in making the UI this way was to make it as simple as possible, as to make sure that it would not get in the way of using the calculator. To do so, there are very few colours present in the application, only a few different shades of dark and light greys. The options to switch between light an dark styles are hidden in the menu, as to make sure that they are out of the way. Same as with the History button, and the Help and About pages. W
+
+    \paragraph{}
+    With the colours being by default very dark, it is easier on the eyes of the user, with the option of switching to a lighter style if they chose so. It was also important to easily differentiate the special functions from the normal mathematical equations, therefore there is an empty space between those 2 sections. Also, to make sure that the calculator was easy to use, the texts in the labels and buttons were made larger so as to not strain the eye. The History window was made to be similar, with large texts and easily identifiable buttons so as to make it not difficult to understand what they do.
+
+
+    \subsection{Source Code Review}
+        \paragraph{}
+        Due to the complexity of the project, software configuration management (SCM) was necessary as specified by the IEEE 828-2021 standard [https://ieeexplore.ieee.org/document/6170935]. This standard specified how we need to collaborate as a team on complex software It contains several sub-components, such as version control among others,
+
+        \paragraph{}
+        Version control  was a necessity in order to manage change. For this project, we used the Git branching model which is a Version Control System (VCS) . This allowed us to individually work on certain tasks as well as collaborate on others. We performed “branching” of the code in order to work on different tasks and we merged them back to the main branch once the tasks were complete.
+
+        \paragraph{}
+        It is important to note that Git was crucial to our source code review results. We used a type of Git branching known as “feature branching” which affected our source code review results. Essentially, “feature branching” deals with branches as features. Whenever we need to code 1 feature of ETERNITY, we branch the code into a feature branch, naming the branch the name of the feature to create.
+
+        \paragraph{}
+        The source code reviews were done when merging a feature branch into the main. We concluded some key results when reviewing. The following are the results:
+
+        \begin{itemize}
+            \item While reviewing a branch, some functions were redundant. For example, the sinh(x) needed to calculate  exponents  using the Mclauren series. We were calculating the Mclauren series in the FunctionSinh.py file. Upon reviewing, it was realized that another file, FunctionExponent.py had already implemented this functionality. We hence removed the redundancy.
+
+            \item We noticed that we were using a lot of the same constants in different files, this lead us to create a parent class that contained the constants, as well as some abstract functions, that could be used by the child classes. All function classes were hence made children of the parent class.
+
+            \item It was also noticed that the same standard was not being followed in some of the classes. In order to make it easier for the GUI manipulation, some standards were established. For example, every function class has a constructor and a separate function that computes the function in question.
+
+            \item Upon reviewing, important comments were added to the report, using another standard established by the team. This is important because if somebody else were to work on another developer’s code, it made it easier for them to understand what was going on.
+        \end{itemize}
