@@ -37,6 +37,7 @@ class Interpreter:
 
     def evaluateEquation(self, isDeg:bool) -> tuple[float, bool, str]:
 
+        result = 0.0
         try:
 
             readchars = charReader(self.equation)
